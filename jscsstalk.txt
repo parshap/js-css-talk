@@ -1,0 +1,882 @@
+﻿# Cascading
+
+.reveal p { }
+
+# JS not important
+
+JavaScript not important part -- important is using local styles,
+explicit dependencies, explicit interfaces
+
+# Does it work?
+
+Can't top level component define entire stylesheet using child
+selectors? Then not local, weird selector issues.
+
+No? Because of generated class names?
+
+# Intro ideas
+
+----
+
+ * Hi! Talk about JS+CSS
+ * Show you: 1) How, 2) Why
+ * How
+ * Why
+ * Conclusion
+
+-----
+
+ * Hi! Talk about how to write CSS in JS
+ * Why? CSS has a lot of problems. But first: How
+ * How
+ * Why
+ * Conclusion
+
+-----
+
+ * Hi!
+ * A lot of talk about CSS+JS
+ * I want to tell you guys about my take
+ * But first, think about your CSS challenges
+ * How
+ * Why
+
+----
+
+There's been a lot of talk recently about mixing CSS and JavaScript.
+
+  * Project 1
+  * Project 2
+  * Project 3
+
+@vjeux gave a talk, titled "CSS in JS", that talked about the issues
+Facebook has experience with CSS at large scale and how JavaScript can
+help.
+
+This was inspiring for me and led me to really think about these
+problems and how we can solve them.
+
+The result has been a wacky way to write CSS: using JavaScript.
+
+I'd like to share this wacky way of writing CSS with you all and show
+you the problems that it solves.
+
+----
+
+Introduction
+* > JS is the future of CSS
+   * “My goal is to convince you that JavaScript is the future of CSS and tell you about the current state of the ecosystem.”
+* CSS in JS
+   * or Some Cool Things You Can Do If You Write CSS in a Really Weird Way
+
+* three things:
+   * Problems with CSS
+   * CSS in JS and tradeoffs
+   * CSS-aware + DOM-aware apps
+
+ * JavaScript CSS
+    * The title of this talk is "JavaScript CSS"
+    * But more accurately, it's going to be:
+    * Some Cool Things You Can Do if You Write CSS in a Really Weird Way
+
+ * What is CSS
+    * Styles
+    * A way to map styles to dom elements
+
+ * Intro
+    * Hi
+    * Talk to you about JavaScript and CSS
+    * Preface: I love the web platform and css
+    * I've been writing CSS for almost 20 years now
+    * And in that time I've run into a problem or two [CSS is hard]
+    * There's an opportunity to solve or completely sidestep some of
+      these problems by changing the way we write styles and using
+      JavaScript
+ * Problems with CSS
+    * Before I get into how we can use JavaScript to solve the problems
+      with CSS
+    * Let me outline what exactly the problems with CSS are
+ * CSS in JS
+    * So how can we use JavaScript to solve these problems?
+    * Let's look at what expressing styles in JavaScript looks like
+ * Not Different
+    * .button vs var button
+    * media queries
+    * pseudo selectors + pseudo elements
+    * nested selectors
+ * How do we use these styles?
+    * Let's introduce function that takes one of these style objects,
+      and returns a class name we can use in our dom
+    * className(style)
+    * class: "button" -- class: className(button),
+ * So why would we want to do this?
+    * Remember the problems with CSS I outlined?
+    * By using JavaScript we can outright avoid most of them and take
+      advantage of JavaScript tooling to solve the rest.
+
+// 0:30
+el(Slide, {
+  title: "No Global Namespace",
+  content: md`
+    * Local JavaScript Variables
+
+      \`\`\`js
+      var buttonStyle = {
+        color: "red",
+      };
+      \`\`\`
+  `,
+  script: md`
+    We refer to styles using local JavaScript variables, so we
+    don't have to worry about naming conflicts in a global
+    namespace.
+
+    Because this variable is local to our current scope, we can
+    gaurantee that no one else is using this style.
+  `,
+}),
+
+el(Slide, {
+  title: "Removing Unused Styles",
+  content: md`
+    \`\`\`js
+    var buttonStyle = {
+      color: "red",
+    };
+
+    module.exports = function createButton() {
+      return $("<div>")
+        .attr("class", className({
+          color: "pink",
+        }));
+    }
+    \`\`\`
+
+    Just like any other unused JavaScript code
+  `,
+  script: md`
+    If styles are just JavaScript variables, we can find and remove
+    unused styles like we do with any other JavaScript code.
+
+    Here we can see the `buttonStyle` variable isn't actually used
+    anywhere, we could remove it.
+  `,
+}),
+
+el(Slide, {
+  title: "Removing Unused Styles",
+  content: md`
+    ### Static Analysis
+
+    Linters can help
+
+    \`\`\`js
+    var buttonStyle = {
+      color: "red",
+    };
+
+    module.exports = function createButton() {
+      return $("<div>")
+        .attr("class", className({
+          color: "pink",
+        }));
+    }
+    \`\`\`
+
+    \`\`\`
+    Line 1: 'buttonStyle' is defined but never used.
+    \`\`\`
+  `,
+  script: md`
+    We, of course, have static analysis tooling that helps us with this.
+    Linters like *eslint* can automatically find unused variables for
+    us.
+  `,
+}),
+
+el(Slide, {
+  title: "Removing Unused Code",
+  content: md`
+    ### Static Analysis
+
+    Find unused style modules
+
+    \`\`\`js
+    // styles/button.js
+    module.exports = {
+      color: "red",
+    };
+    \`\`\`
+
+    \`\`\`js
+    // components/button.js
+    var buttonStyles = require("../styles/button");
+    module.exports = function createButton() {
+      return $("<div />")
+        .text("Click me!")
+        .attr("class", className(buttonStyles));
+    };
+    \`\`\`
+
+    \`\`\`
+    $ search-requires -m styles/button.js
+    components/button-styles.js
+    \`\`\`
+  `,
+  scripts: md`
+    And if we're using *style modules*, we can use something like
+    search-requires to find where exactly we're using that code from.
+
+    Here we have the button component module that is requiring the
+    button styles module. The search-requires command line tool can help
+    us unravel this dependency graph and find unused code in large
+    codebases.
+  `,
+}),
+
+el(Slide, {
+  title: "Dead Code Elimination",
+  content: md`
+    **UglifyJS** can find and remove dead code
+
+    \`\`\`js
+    var styles = {
+      color: "red",
+    };
+
+    if (false) {
+      styles = {
+        color: "pink";
+      };
+    }
+
+    createButton(styles);
+    \`\`\`
+  `,
+  script: md`
+    Furthermore, we can use minification tools like *UglifyJS* to
+    automatically remove dead code.
+  `,
+}),
+
+el(Slide, {
+  title: "Dependencies",
+  content: md`
+    ### Style Modules
+
+    \`\`\`js
+    // button-styles.js
+    module.exports = {
+      color: "red",
+    };
+    \`\`\`
+
+    \`\`\`js
+    // button.js
+    var buttonStyles = require("../styles/button");
+    module.exports = function createButton() {
+      return $("<div />")
+        .text("Click me!")
+        .attr("class", className(buttonStyles));
+    };
+    \`\`\`
+  `,
+  script: md`
+    To share styles between components, we can use modules.
+
+    Here we have the button.js module that requires the button-styles.js
+    module.
+
+    Using the module system to be explicit about our style dependencies lets
+    us use tools like Browserify and Webpack to bundle styles right
+    alongside our component code.
+
+    Now when we asynchronously load JavaScript components on demand, we
+    no longer have to make sure the right css file is also loaded and in
+    the right order. We get them automatically.
+  `,
+}),
+
+el(Slide, {
+  title: "Interopability",
+  content: md`
+    No language barrier
+
+    \`\`\`js
+    var buttonStyle = {
+      color: "red",
+    };
+    d3.path()
+      .color(buttonStyle.color);
+    \`\`\`
+  `,
+  script: md`
+    There is no language barrier, so we're able to use values from
+    styles directly in our JavaScript code.
+  `,
+}),
+
+el(Slide, {
+  title: "Cascading and Specificity",
+  content: md`
+    \`\`\`js
+    var xtend = require("xtend");
+
+    var baseButtonStyle = {
+      padding: "1em",
+      color: "red",
+    };
+    var largeButtonStyle = xtend(baseButtonStyle, {
+      padding: "2em",
+    });
+
+    $("<div />")
+      .text("Click me!")
+      .attr("class", className(largeButtonStyle));
+    \`\`\`
+  `,
+  script: md`
+    Because we define single style objects at a time, we can avoid
+    cascading and specificity altogether.
+
+    We have the power of JavaScript to be explicit about the exact
+    behavior we want.
+  `,
+}),
+
+el(Slide, {
+  title: "Language Extensions",
+  content: md`
+    Functions!
+
+    \`\`\`js
+      var color = require("color");
+      var buttonStyle = {
+        color: "red",
+        ":hover": {
+          color: color.darken("red", 0.1),
+        },
+      };
+    \`\`\`
+  `,
+  script: md`
+    Again, because we have the power of a full programming language, we
+    can use arbitrary functions to generate the styles we want.
+  `,
+}),
+
+el(Slide, {
+  title: "Encapsulation",
+  content: md`
+    \`\`\`js
+    function createPurchaseButton() {
+      return $("<div />")
+        .text("Purchase!")
+        .attr("class", "purchase-button")
+        .html(
+          $("<i />").attr("class", "icon")
+        );
+    }
+    \`\`\`
+
+    Want this button to look consistent everywhere.
+  `,
+  script: md`
+    Here we have a function that creates a *purchase button*. This is an
+    important visual in our app and we want to make sure that it looks the
+    same everywhere in our app.
+  `,
+}),
+
+el(Slide, {
+  title: "Encapsulation",
+  content: md`
+    \`\`\`js
+    function createPurchaseButton() {
+      return $("<div />")
+        .text("Purchase!")
+        .attr("class", "purchase-button")
+        .html(
+          $("<i />").attr("class", "icon")
+        );
+    }
+    \`\`\`
+
+    \`\`\`css
+    .my-special-component .purchase-button .icon {
+      font-size: 50%;
+    }
+    \`\`\`
+
+    * CSS allows modification of arbitrary nodes.
+    * Probably not a problem for documents and small apps
+    * Large apps and teams want to be more explicit
+  `,
+  script: md`
+    Here we have a function that creates a *purchase button*. This is an
+    important visual in our app and we want to make sure that it looks the
+    same everywhere.
+
+    But CSS selectors function in a global namespace, so you're able to
+    target any arbitrary dom node.
+
+    We have no control over the internals of our components getting
+    styled in unexpected ways.
+
+    Here we have someone that decided they want their purchase button to
+    have a smaller icon.
+
+    We can use naming conventions (like BEM) and documentation to
+    discourage this, but we don't have a real way to prevent it.
+
+    When you think about the original use case of the web: documents,
+    this isn't a big deal, and maybe even considered a feature.
+
+    But in large apps with lots of people working on them, we want
+    to really think about our visuals and create explicit interfaces to
+    modify them.
+
+    So now if we want to refactor the internals of this component, we
+    have to inspect all call sites to make sure they don't break.
+
+    Now when we go to change the implementation of our purchase button,
+    it's not clear what we need to continue supporting. If the
+    font-based icon gets changed to an image icon, the resize is going
+    to break. We have to inspect all call sites to see how the component is
+    getting modified.
+
+    This forces us to think about the different ways a visual can be
+    used and results in more consistent looking interfaces.
+  `,
+}),
+
+el(Slide, {
+  title: "Encapsulation",
+  content: md`
+    \`\`\`js
+    var xtend = require("xtend");
+    function createPurchaseButton(opts) {
+      var buttonStyles = {
+        // ...
+        ".icon": xtend({
+          // ...
+        }, opts.iconStyle),
+      };
+      return $("<div />")
+        .text("Purchase!")
+        .attr("class", className(buttonStyles))
+        .html(
+          $("<i />").attr("class", "icon")
+        );
+    }
+    \`\`\`
+
+    \`\`\`js
+      createPurchaseButtion({
+        iconStyles: {
+          "font-size": "50%",
+        },
+      });
+    \`\`\`
+
+    Similar functionality: allow call site to modify icon styles.
+  `,
+  script: md`
+    Here we are achieving the same functionality as before, allowing the
+    icon styles to be modified arbitrarily by the call site.
+  `,
+}),
+
+el(Slide, {
+  title: "Encapsulation",
+  content: md`
+    \`\`\`js
+    var xtend = require("xtend");
+    function createPurchaseButton(opts) {
+      var buttonStyles = {
+        // ...
+        ".icon": {
+          // ...
+          color: opts.iconColor || "#bada55",
+        },
+      };
+      return $("<div />")
+        .text("Purchase!")
+        .attr("class", className(buttonStyles))
+        .html(
+          $("<i />").attr("class", "icon")
+        );
+    }
+    \`\`\`
+
+    \`\`\`js
+      createPurchaseButtion({
+        iconColor: "blue",
+      });
+    \`\`\`
+
+    Create an explicit interface
+  `,
+  script: md`
+    Here we've created an explicit interface for modifying the button
+    styles in a way we support.
+  `,
+}),
+
+el(Slide, {
+  title: "Colocating",
+  content: md`
+    * DOM structure and styles are inherently coupled
+    * If both defined with JavaScript, they can live in same file
+    * Easier to reason about why something looks a certain
+  `,
+  script: md`
+    If we use JavaScript to define our dom structure, and JavaScript to
+    define our styles, then they can both live in the same file.
+
+    DOM structure and styles are inherently coupled, having them
+    together helps reason about why something looks a certain way on the
+    screen.
+
+    We don't need to rely on naming conventions to find the right css
+    file.
+  `,
+}),
+
+el(Slide, {
+  title: "Compression",
+  content: md`
+    \`\`\`js
+      var buttonStyles1 = {
+        padding: "1em",
+        border: "none",
+        color: "blue",
+      };
+
+      var buttonStyles2 = {
+        padding: "1em",
+        border: "none",
+        color: "red",
+      };
+
+      $("<div />")
+        .attr("class", className(buttonStyles1));
+
+      $("<div />")
+        .attr("class", className(buttonStyles2));
+    \`\`\`
+
+    \`\`\`html
+      <div class="buttonStyles1" />
+      <div class="buttonStyles2" />
+    \`\`\
+
+    \`\`\`css
+      .buttonStyles1 {
+        padding: 1em;
+        border: none;
+        color: blue;
+      }
+
+      .buttonStyles2 {
+        padding: 1em;
+        border: none;
+        color: red;
+      }
+    \`\`\`
+
+    \`\`\`html
+      <div class="a b" />
+      <div class="a c" />
+    \`\`\
+
+    \`\`\`css
+      .a {
+        padding: 1em;
+        border: none;
+      }
+
+      .b {
+        color: blue;
+      }
+
+      .c {
+        color: red;
+      }
+    \`\`\`
+  `,
+  script: md`
+    Since we're generating class names and css, we can optimize for
+    payload size.
+
+    We can factor out common styles into separate classes and minify
+    class names.
+
+    We can also optimize to get the most out of gzip by putting
+    repeating symbols closer together.
+  `,
+}),
+
+el(Slide, {
+  title: [
+    "Best of All:",
+    el("br"),
+    "Easier to Make Changes",
+  ],
+  content: md`
+    ### Explicit Dependencies
+
+    Change dom without worrying about unknown selectors breaking.
+
+    ### Local Scope
+
+    Change styles without worrying about unknown elements breaking.
+
+    ### Explicit Interfaces
+
+    Refactor internals without worrying about call sites breaking.
+  `,
+  script: md`
+    Ok! My last point and what I think is the most important advantage
+    of writing styles this way.
+
+    It becomes easier to make changes.
+
+    You can change dom structure without worrying about a selector in
+    some unknown file breaking.
+
+    You can change styles without worrying about it affecting elements
+    on some unknown page.
+
+    You can define explicit interfaces, so you can later refactor
+    internals without worrying about every call site and implicit
+    dependencies.
+  `,
+}),
+
+
+
+ * npm-style front-end
+   * This talk assumes npm-style front-end
+   * What I mean by this is: Using JavaScript modules to create your dom
+   * If you don't know what I'm talking about: JSConf 2014
+   * There's lots of ways to do this: jQuery, React, hyperscript,
+     mercury, new-element
+   * Here's what it looks like with:
+      * hyperscript
+      * React
+      * But for the examples in this talk, I'm going to use jQuery's
+        element creation api, which I'm sure you're all familiar with.
+
+Problems with CSS
+
+* Problems with CSS
+   * alright, hold on, let me back up
+   * before i get into any of the fun stuff
+   * let me rant for a minute
+   * i love the web and i love css
+   * but i have a 100 problems and they’re all css
+   * so let me list off just a few of, what i would call, faults of css
+
+* global namespace
+   * name conflicts
+      * no two names can collide. ever.
+      * nightmare for library authors
+* removing unused code
+   * hard to remove rules
+      * once you add a rule, anyone from anywhere can be using it, so it’s difficult to ever remove it
+      * “each rule can look at anything in the dom”
+   * difficult to grep selectors
+      * .callout h3
+      * how do you find occurrences of this h3? hard with nested templates
+         * file containing <h3> may be different from file containing class=”callout”
+* dependencies
+   * given some html hard to know what css files are required
+   * hard to async load on demand - have to keep state
+* no interop, difficult to share constants or logic
+   * .foo { color: #bada55; } -- hard to tell d3 about “#bada55”
+* cascading, specificity
+   * “designed with single file in mind”
+   * difficult to reason about
+   * makes you fight against unrelated code
+      * example - .input-field or :link
+   * order matters: difficult when loading css on-demand or non-deterministically
+      * “nightmare when bundling multiple files and loading async”
+* encapsulation
+   * “spend time designing api that supports all use cases”
+   * don’t want: “ability to modify style of internals via selectors”
+   * “this puts the maintainer of the component in a very bad spot because when he changes the internals of the component, she is going to break all those call sites. makes you fearful of changing code”
+   * want: provide hooks for styling specific nodes with specific properties/values
+* Language extension
+   * want: transform colors, perform arithmetic
+      * darken(#bada55)
+      * width: 920/2px
+* ? Want to use new features
+   * not all can be compiled to css
+      * e.g., var scoping, flexbox
+CSS in JS
+* preprocessors
+   * a lot of these problems have been solved with new languages that compile to css
+   * currently: `css -> ast -> transform -> ast -> css
+* cut out the css
+   * css -> ast -> 
+   * what happens if we generate the ast in js directly
+* what does it look like expressing css in javascript?
+   * well, all you need is a javascript dsl of sorts that lets you express css constructs
+   * and it turns out it’s not too different from actual css
+      * .button {
+ color: red;
+}
+      * var button = {
+ color: “red”,
+};
+      * media queries
+      * pseudo selectors
+      * pseudo elements
+   * what about descendent selectors?
+   * you *could* extend this dsl
+   * and some have done this e.g., react-style
+   * Don’t use nested selectors
+   * but, i argue don’t use them
+   * selectors serve as a way to map block of code in css to node in dom, they connect two contexts
+   * they also, in a weird way, enable reusability and code sharing
+   * but if our css is defined as modular units in the same context that we define our templates or dom
+   * i say, we a can do a better job accomplishing that task than css and the browser can
+   * ok, this is probably where most of you think i’m crazy
+   * well it turns out this is actually a css best practice for various reasonsapb [source]
+   * but bear with me, I will show you some cool things you can do as a result of doing this one weird thing
+   * what does it look like using it
+   * getClassName
+   * what about updating: backbone-style, virtual dom
+   * template/view-level problem
+   * helpful if template allows calling js directly
+   * mustache: pass variables in context
+   * first, all of the problems with CSS I described earlier are solved
+   * solved: global namespace
+   * js variables
+   * solved: dependencies
+   * require() + browserify/webpack
+   * solved: removing unused code
+   * just like any other unused js
+   * linters to find unused variables
+   * search-requires to find where you require() style modules from
+   * uglifyjs
+   * solved: interop
+   * no language barrier!
+   * solved: cascading and specificity
+   * explicitly control logic
+   * solved: language extensions
+   * functions!
+   * solved: encapsulation:
+   * no css!
+   * can enforce 
+   * colocating
+   * better compression
+   * rewrite classes to factor out common styles
+   * optimize for gzip
+   * See “CSS in JS” by @vjeux
+
+
+CSS in DOM-aware JS
+   * explain “marrying” css with our runtime (js)
+   * if your program knows about your document tree
+   * i.e., statically-analyzable or document-aware
+   * e.g., static html, react, virtual-dom, ember’s glimmer
+   * and knows about your css (and it’s statically? analyzable),
+   * it can compute the styles for each node
+   * example: html + css = inline style attributes
+   * naive example, can’t just use the style attribute, media queries, pseudo elements, etc.
+   * existing projects do this (juice, styliner, etc.)
+   * don’t actually need css, just a way to get styles for each node
+   * single-purpose classes++
+   * http://xn--h4hg.ws/2015/05/14/what-are-classes-for/
+
+
+   * this is good because:
+   * “render” server-side
+   * “normalize” css across browsers
+   * polyfill existing spec or implement your own!
+   * polyfilling
+   * :last-child
+   * flex-box via https://github.com/facebook/css-layout
+   * related
+   * http://blog.scottlogic.com/2015/02/02/svg-layout-flexbox.html
+   * critical path ?
+Conclusion
+   * Related work
+   * https://github.com/js-next/react-style
+   * https://github.com/syranide/react/tree/classstyle
+   * https://github.com/petehunt/jsxstyle
+   * https://github.com/martinandert/react-inline
+   * <helium> @parshap
+
+
+        
+https://github.com/VirtualCSS/planning
+https://twitter.com/floydophone/status/590926572644794368
+http://blog.scottlogic.com/2015/02/02/svg-layout-flexbox.html
+https://github.com/kriasoft/react-starter-kit/pull/112/files
+
+
+> js is the future of css
+> https://twitter.com/mrmrs_/status/591397031635197952
+
+
+
+Demo Design
+
+
+js api to generate css
+   * generate css class names
+   * needs some registry state to register and generate “used” parts of css
+   * or (better?):each “component” calculates it’s own (serialized?) css
+var style = createStyle(“& a”, {
+  // css props
+});
+style.getClassName()
+var styles = createStyleSheet()
+styles.add(style)
+styles.getClassName(style)
+styles.getCSS()
+
+
+
+Notes
+   * two sections
+   * js in css
+   * issues in css
+   * js api, generates class names
+   * fixes issues in css
+   * css + dom
+   * = computed styles
+   * polyfill styles
+   * “compress” classes
+   * critical path
+
+
+css in js implementation
+   * getClassName(styles object)
+   * what about other css features (descendent selectors?
+   * i argue don’t use them
+   * selectors serve as a way to map block of code in css to node in dom
+   * i say, we a can do a better job accomplishing that task than css and the browser can
+   * for each css feature, show how it can be done in js
+   * selectors, pseudo classes, media selectors, cascading, 
+   * for each “problems with css”, show how this solves it
+   * need: abstractions on top of “templates”
+
+
+functions are everything
+this stuff only works if it’s cheap to create a new template/component. creating new template file and register a partial
+
+
+needs buy in to some “components” model. has to be easy to create and reuse tiny wrapper around element + classes
+
+
+you’re not constrained by having to interop between css and html
+
+
+define your own api for modifying styles and node
+
+
+don’t shoot yourself in the foot - sometimes constraint is good

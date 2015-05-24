@@ -1,0 +1,8 @@
+#!/bin/bash
+
+FILES="slides.js generate.js template.html"
+
+node_modules/.bin/onchange $FILES -- bash -c '\
+  echo "Reload $(date)" && \
+  npm run-script -s generate | sponge reveal.js/index.html \
+'
