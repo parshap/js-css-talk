@@ -134,32 +134,141 @@ module.exports = [
 
   el(Slide, {
     children: md(`
-      Why write CSS using JavaScript?
+      What?
+
+      ## Write CSS using JavaScript
+
+      A strategy for styling **reusable interface components**
+
+      ... using JavaScript
+
+      Take advantage of JavaScript tooling and best practices
+
+      Which turn out to be helpful for writing **modular** and
+      **reusable** styles.
+    `),
+    script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      JavaScript Components
+
+      Works best with components *defined in JavaScript*
+
+      \`\`\`js
+      function createButton() {
+        return $("<div>")
+          .attr("class", "button")
+          .append($("<span>").text("Click me"))
+          .append($("<i>").attr("class", "icon"))
+      }
+      \`\`\`
+    `),
+    script: md(`
+      While not a strict requirements I think this is some words
+      that's menu you're using JavaScript find your components
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## JavaScript Components
+
+      * React / JSX
+      * hyperscript
+      * mercury
+      * new-element
+      * jQuery
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      Why?
 
       ## CSS Has Problems
 
-      * Global Namespace *
-      * Cascading *
-      * Specificity *
+      * Global Namespace
+      * Cascading
+      * Specificity
       * Bundling
       * Encapsulation
-      * Interoperability *
+      * Interoperability
       * Dead Code Elimination
       * Implicit Interfaces
       * Dependencies
       * Loading
-      * Language Extension *
+      * Language Extension
     `),
     script: md(`
       Why would we write CSS using JavaScript?
 
       CSS has some issues.
+
+      I'll highlight few of them.
     `),
   }),
 
   el(Slide, {
-    title: "Global Namespace",
+    title: "Cascading & Specificity",
     children: md(`
+      * Confusing behavior
+      * Order matters
+      * Fight against code
+
+      \`\`\`css
+      .container > h2 {
+        font-family: Lato;
+        color: #43110;
+      }
+      \`\`\`
+    `),
+    script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    title: "Cascading & Specificity",
+    children: md(`
+      * Confusing behavior
+      * Order matters
+      * Fight against code
+
+      \`\`\`css
+      .special-heading {
+        font-family: Impact;
+        text-transform: uppercase;
+      }
+      \`\`\`
+
+      \`\`\`html
+      <div class="container">
+        <h2 class="special-heading">
+          Special Heading!
+        </h2>
+      </div>
+      \`\`\`
+    `),
+    script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    title: "Cascading & Specificity",
+    children: md(`
+      * Confusing behavior
+      * Order matters
+      * Fight against code
+
+      \`\`\`css
+      .special-heading,
+      .container .special-heading {
+        font-family: Impact;
+        text-transform: uppercase;
+      }
+      \`\`\`
     `),
     script: md(`
     `),
@@ -168,8 +277,139 @@ module.exports = [
   el(Slide, {
     title: "Interopability",
     children: md(`
+      No interopability with JavaScript
+
+      \`app.css\`
+
+      \`\`\`css
+      .brand-color {
+        color: #bada55;
+      }
+      \`\`\`
+
+      \`app.js\`
+
+      \`\`\`js
+      var canvas = document.querySelector("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#bada55";
+      ctx.fillText("Hey there", 0, 0);
+      \`\`\`
+
     `),
     script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    title: "Language Extension",
+    children: md(`
+      No ability to extend the language.
+
+      \`\`\`css
+      .brand-color {
+        color: #bada55;
+        border-color: darken(#bada55, 0.1);
+      }
+      \`\`\`
+    `),
+    script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## How?
+
+      CSS:
+
+      \`\`\`css
+      .button {
+        color: red;
+      }
+      \`\`\`
+
+    `),
+    script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## How?
+
+      JS:
+
+      \`\`\`js
+      var button = {
+        color: "red",
+      };
+      \`\`\`
+    `),
+    script: md(`
+    `),
+  }),
+
+
+  el(Slide, {
+    children: md(`
+      ## How?
+
+      JS:
+
+      \`\`\`js
+      var button = {
+        color: "red",
+
+        ":hover": {
+          color: "pink",
+        },
+
+        "@media (min-width: 320px)": {
+          "font-size": "1.2em",
+        },
+      };
+      \`\`\`
+
+    `),
+    script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Call-site
+
+      \`\`\`js
+      var sheet = createSheet();
+
+      var button = {
+        color: "red",
+      };
+
+      function createButton() {
+        return $("<div>")
+          .attr("class", sheet.className(button));
+      }
+      \`\`\`
+    `),
+    script: md(`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Call-site
+
+      \`\`\`text
+      > console.log(sheet.className(button));
+      "a"
+
+      > console.log(sheet.toString());
+      ".a {
+        color: red
+      }"
+      \`\`\`
     `),
   }),
 
