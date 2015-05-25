@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/bin/bash -e
 
 FILES="slides.js generate.js template.html"
+
+(cd reveal.js && node_modules/.bin/grunt serve) &
 
 node_modules/.bin/onchange $FILES -- bash -c '\
   echo "Reload $(date)" && \
