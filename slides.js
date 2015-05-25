@@ -134,55 +134,55 @@ module.exports = [
 
   el(Slide, {
     children: md(`
-      What?
-
-      ## Write CSS using JavaScript
-
-      A strategy for styling **reusable interface components**
-
-      ... using JavaScript
-
-      Take advantage of JavaScript tooling and best practices
-
-      Which turn out to be helpful for writing **modular** and
-      **reusable** styles.
+      ## CSS is Awesome
     `),
     script: md(`
+      Before we talk about JavaScript, let's talk about CSS.
     `),
   }),
 
   el(Slide, {
     children: md(`
-      JavaScript Components
+      ## But CSS Has Issues
 
-      Works best with components *defined in JavaScript*
+      Missing features…
 
-      \`\`\`js
-      function createButton() {
-        return $("<div>")
-          .attr("class", "button")
-          .append($("<span>").text("Click me"))
-          .append($("<i>").attr("class", "icon"))
-      }
-      \`\`\`
+      * Variables & functions
+      * Dependency management
+      * Code sharing / reuse
+      * Interoperability
     `),
     script: md(`
-      While not a strict requirements I think this is some words
-      that's menu you're using JavaScript find your components
+      But CSS does have some problems.
+
+      It's missing some important features:
+
+      * Being able to extend the language with variables & functions
+      * No dependency management
+      * No unit of code reuse
     `),
   }),
 
   el(Slide, {
     children: md(`
-      ## JavaScript Components
+      ## But Preprocessors!
 
-      * React / JSX
-      * hyperscript
-      * mercury
-      * new-element
-      * jQuery
+      LESS, Stylus, Sass, SCSS, Rework, DtCSS, Switch CSS, Compass, CSS-Crush, Clay, Myth
+    `),
+    script: md(`
+      We've solved a lot of these issues by inventing new
+      languages we call CSS preprocessors.
     `),
   }),
+
+  el(Slide, {
+    children: md(`
+      ## But Preprocessors Are Weird…
+    `),
+    script: md(`
+    `),
+  }),
+
 
   el(Slide, {
     children: md(`
