@@ -142,9 +142,21 @@ Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmai
 				width: auto;
 			}
 
+			.reveal blockquote {
+				margin: 1em 0;
+				padding: 20px;
+				width: auto;
+				background-color: hsla(0, 100%, 0%, 0.05);
+				box-shadow: none;
+			}
+
+			.reveal blockquote p:first-child, .reveal blockquote p:last-child {
+				display: block;
+			}
+
 			code.lang-text,
 			code.lang-text * {
-				color: #586e75;
+				color: #586e75 !important;
 			}
 
 			.reveal pre code {
@@ -154,10 +166,15 @@ Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmai
 				overflow: auto;
 				max-height: 400px;
 				word-wrap: normal;
+				overflow: visible;
 
 				/* Undo reveal.js hljs overrides */
 				background: hsl(44, 87%, 94%);
 				color: hsl(196, 13%, 45%);
+			}
+
+			.reveal ol, .reveal dl, .reveal ul {
+				margin-bottom: 20px;
 			}
 
 			/* White background */
@@ -166,7 +183,9 @@ Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmai
 				background: white;
 			}
 
-}
+			h1, h2, h3, h4, h5, h6 {
+				-webkit-font-smoothing: antialiased;
+			}
 		</style>
 
 		<!-- Printing and PDF exports -->
