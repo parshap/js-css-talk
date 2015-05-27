@@ -199,17 +199,18 @@ module.exports = [
     `),
   }),
 
+
+  // @TODO Big
   el(Slide, {
     children: md(`
-      ## Outline
-
-      * CSS
-      * Issues with CSS
-      * Workarounds to these issues
-      * Issues with workarounds
-      * JavaScript CSS
+      ## Ideas, Not Code
     `),
     script: md(`
+      Before I start, I want to warn you. This talk is about ideas, not code.
+
+      Even though I'm going to be showing a lot of code, I'm not neccesarily saying it's a good idea or if it will even work.
+
+      My goal here is to get you guys thinking. I want to hear your thoughts. So if you think something is awesome and could solve your problems, or you think I'm crazy, come find me and tell me!
     `),
   }),
 
@@ -1072,8 +1073,8 @@ module.exports = [
 
       * Constants and variables
       * Extend the language (functions)
-      * Module and dependency management
       * Code sharing / reuse
+      * Module and dependency management
       * Interoperability
     `),
     script: md(`
@@ -1085,98 +1086,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
-    children: md(`
-      ## Arithmetic
-
-      \`\`\`js
-      var styles = {
-        ".button": {
-          margin: 10 - 2 + "px" // 8px
-        },
-      };
-      \`\`\`
-    `),
-    script: md(`
-      Let's look at arithmetic in JavaScript.
-
-      And it doesn't matter how many spaces *or* parenthesis you use.
-
-      Even if you use a lot of parenthesis.
-    `),
-  }),
-
-  el(Slide, {
-    children: md(`
-      ## Arithmetic
-
-      \`\`\`js
-      var styles = {
-        ".button": {
-          margin: 10 - 2 + "px" // 8px
-          margin: 10 -2 + "px" // 8px
-        },
-      };
-      \`\`\`
-    `),
-    script: md(`
-      JavaScript has arithmetic.
-
-      And it doesn't matter how many spaces *or* parenthesis you use.
-
-      Even if you use a lot of parenthesis.
-    `),
-  }),
-
-  el(Slide, {
-    children: md(`
-      ## Arithmetic
-
-      \`\`\`js
-      var styles = {
-        ".button": {
-          margin: 10 - 2 + "px" // 8px
-          margin: 10 -2 + "px" // 8px
-          margin: (10 - 2) + "px" // 8px
-        },
-      };
-      \`\`\`
-    `),
-    script: md(`
-      JavaScript has arithmetic.
-
-      And it doesn't matter how many spaces *or* parenthesis you use.
-
-      Even if you use a lot of parenthesis.
-    `),
-  }),
-
-  el(Slide, {
-    children: md(`
-      ## Arithmetic
-
-      \`\`\`js
-      var styles = {
-        ".button": {
-          margin: 10 - 2 + "px" // 8px
-          margin: 10 -2 + "px" // 8px
-          margin: (10 - 2) + "px" // 8px
-          margin: (((((((10 - 2))))))) + "px" // 8px
-        },
-      };
-      \`\`\`
-    `),
-    script: md(`
-      JavaScript has arithmetic.
-
-      And it doesn't matter how many spaces *or* parenthesis you use.
-
-      Even if you use a lot of parenthesis.
-    `),
-  }),
-
-  // @TODO: Emphasize that "unique" is a jab
-  // @TODO: unique -> wierd? (or other negative word)
+  // @TODO Fragments?
   el(Slide, {
     children: md(`
       ## Variables
@@ -1202,8 +1112,8 @@ module.exports = [
     script: md(`
       CSS has no way to define and reuse variables.
 
-      LESS and Sass both give us this ability in their own way and unique
-      scoping rules.
+      LESS and Sass both give us this ability, but they have their own unique
+      and weird semantics.
     `),
   }),
 
@@ -1222,103 +1132,97 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
-      JavaScript has variables! And with thought out scoping.
+      JavaScript has variables builtin! And with sane understandable semantics.
 
       We can use them to define our constants in one place.
     `),
   }),
 
-  // @TODO Intro before slide content
-  // @TODO: Simplify code or reveal piece by piece
-  // "YOu guys have probably run into this before, you this color you need to keep in sync with your front end code and you wind of having to leave tehse nasty commments around letting other developers know they need to update javascript when they change the css.
   el(Slide, {
     children: md(`
-      ## Share Constants
-
-      \`\`\`css
-      /* button.css */
-      .button {
-        color: red; /* KEEP SYNC WITH app.js */
-      }
-      \`\`\`
+      ## Arithmetic
 
       \`\`\`js
-      /* app.js */
-      var canvas = document.querySelector("canvas");
-      var ctx = canvas.getContext("2d");
-      ctx.fillStyle = "red"; /* KEEP SYNC WITH button.css */
-      ctx.fillText("Hello!", 0, 0);
-      \`\`\`
-    `),
-    script: md(`
-      With CSS we have no way of sharing values between CSS and our front-end
-      code.
-
-      Say for example we wanted to draw something to a canvas in the same color
-      as our buttons.
-
-      We would have to define our button color in two places and make sure
-      that we keep them in sync with each other any time the color changes.
-    `),
-  }),
-
-  el(Slide, {
-    children: md(`
-      ## Share Constants
-
-      \`\`\`js
-      var buttonColor = "red";
-
-      var style = {
+      var styles = {
         ".button": {
-          color: buttonColor,
-        }
-      }
-
-      var canvas = document.querySelector("canvas");
-      var ctx = canvas.getContext("2d");
-      ctx.fillStyle = buttonColor;
-      ctx.fillText("Hello!", 0, 0);
-      \`\`\`
-    `),
-    script: md(`
-      But if our styles are in JavaScript, and our canvas code is also in
-      JavaScript, it's trivial to share variables between the two.
-    `),
-  }),
-
-  // @TODO: "Unlike preprocessor sthat limit what you can import"
-  el(Slide, {
-    children: md(`
-      ## Dependencies
-
-      \`\`\`js
-      /* colors.js */
-      module.exports = {
-        primary: "red",
-        secondary: "#12c012",
-      };
-      \`\`\`
-
-      ---
-
-      \`\`\`js
-      var colors = require("./colors");
-
-      var style = {
-        ".button": {
-          color: colors.primary,
+          margin: 10 - 2 + "px" // 8px
         },
       };
       \`\`\`
     `),
     script: md(`
-      And of course we don't need everything to be in a single file.
+      * JavaScript also has arithmetic built in!
+      * \`10 - 2 px\` is \`8px\`.
+      * But best of all, unlike *some* css preprocessors, it doesn't matter how many spaces or parenthesis you use.
+    `),
+  }),
 
-      We can use modules to to organize our styles and import dependencies.
+  el(Slide, {
+    children: md(`
+      ## Arithmetic
 
-      And we're not limited by what we can import like preprocessors. It's just JavaScript,
-      so we can import constants, functions, or entire sets of styles.
+      \`\`\`js
+      var styles = {
+        ".button": {
+          margin: 10 - 2 + "px" // 8px
+          margin: 10 -2 + "px" // 8px
+        },
+      };
+      \`\`\`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Arithmetic
+
+      \`\`\`js
+      var styles = {
+        ".button": {
+          margin: 10 - 2 + "px" // 8px
+          margin: 10 -2 + "px" // 8px
+          margin: (10 - 2) + "px" // 8px
+        },
+      };
+      \`\`\`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Arithmetic
+
+      \`\`\`js
+      var styles = {
+        ".button": {
+          margin: 10 - 2 + "px" // 8px
+          margin: 10 -2 + "px" // 8px
+          margin: (10 - 2) + "px" // 8px
+          margin: ((((10 - 2)))) + "px" // 8px
+        },
+      };
+      \`\`\`
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Arithmetic
+
+      \`\`\`js
+      var styles = {
+        ".button": {
+          margin: 10 - 2 + "px" // 8px
+          margin: 10 -2 + "px" // 8px
+          margin: (10 - 2) + "px" // 8px
+          margin: ((((10 - 2)))) + "px" // 8px
+          margin: ((((((((((10 - 2)))))))))) + "px" // 8px
+        },
+      };
+      \`\`\`
+    `),
+    script: md(`
+      It's all the same… just as God intended math to be.
     `),
   }),
 
@@ -1388,6 +1292,29 @@ module.exports = [
 
   el(Slide, {
     children: md(`
+      ## Tiny Modules!
+
+      \`\`\`js
+      var color = require("color");
+
+      var style = {
+        ".button": {
+          color: color("red").mix("green"),
+        }
+      };
+      \`\`\`
+    `),
+    script: md(`
+      Of course, we
+      don't have to always write our own functions, we can take advantage of
+      the JavaScript ecosystem and use modules to do the work for us.
+
+      Here we're using the *color* module from npm to mix red and green.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
       ## Code Reuse
 
       \`\`\`js
@@ -1422,51 +1349,130 @@ module.exports = [
     `),
   }),
 
+  // @TODO Fragments
+  // @TODO Add comments later?
   el(Slide, {
     children: md(`
-      ## Tiny Modules!
+      ## Share Constants
+
+      \`\`\`css
+      /* styles.css */
+      .button {
+        color: red; /* KEEP SYNC WITH app.js */
+      }
+      \`\`\`
 
       \`\`\`js
-      var color = require("color");
+      /* app.js */
+      var canvas = document.querySelector("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "red"; /* KEEP SYNC WITH styles.css */
+      ctx.fillText("Hello!", 0, 0);
+      \`\`\`
+    `),
+    script: md(`
+      * With CSS we have no way of sharing values between CSS and our front-end
+        code.
+      * For example, at the top, we have some CSS code that defines a color.
+      * Then, we have some JavaScript code that draws to a canvas.
+      * We want the canvas drawing to match the color we have in CSS.
+      * You guys have probably run into something like this before. You end up having to leave these nasty comments letting other developers know they need to update both places when one changes.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Share Constants
+
+      \`\`\`js
+      /* styles */
+      var buttonColor = "red";
 
       var style = {
         ".button": {
-          color: color("red").mix("green"),
+          color: buttonColor,
         }
+      }
+
+      /* app */
+      var canvas = document.querySelector("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = buttonColor;
+      ctx.fillText("Hello!", 0, 0);
+      \`\`\`
+    `),
+    script: md(`
+      But if our styles are in JavaScript, and our canvas code is also in
+      JavaScript, it's trivial to share variables between the two.
+    `),
+  }),
+
+  // @TODO: "Unlike preprocessor sthat limit what you can import"
+  el(Slide, {
+    children: md(`
+      ## Dependencies
+
+      \`\`\`js
+      /* colors.js */
+      module.exports = {
+        primary: "red",
+        secondary: "#12c012",
+      };
+      \`\`\`
+
+      ---
+
+      \`\`\`js
+      var colors = require("./colors");
+
+      var style = {
+        ".button": {
+          color: colors.primary,
+        },
       };
       \`\`\`
     `),
     script: md(`
-      Of course, we
-      don't have to always write our own functions, we can take advantage of
-      the JavaScript ecosystem and use modules to do the work for us.
+      Of course we don't need everything to be in a single file.
 
-      Here we're using the *color* module from npm to mix red and green.
+      We can use modules to to organize our styles and import dependencies.
+
+      And it's just JavaScript,
+      so we can import constants, functions, or anything else!
     `),
   }),
 
   // @TODO "NPM!" -- big font?
   el(Slide, {
     children: md(`
-      ## npm
+      ## npm!
 
-      Reusable style modules
+      * Best. Package. Manager.
+      * 150,000+ modules
+      * Reusable style modules
+      * Utility modules
     `),
     script: md(`
-      We can also use npm to publish reusable style modules.
+      * And speaking of modules, we can take advantage of npm!
+      * Not only do we have access to the 150,000+ modules
+      * We can also use npm to publish reusable style modules.
 
       Imagine having an ecosystem of reusable styles for things like buttons
       and tables and other common interface elements.
 
-      All you'd have to do to use them in your codebase is "npm install" and
-      "require" it.
+      Or utility modules that help build styles
+
+      For example a module that takes a
+      background color and automatically generate a foreground color with
+      good contrast. (*Spoiler*: There's already a module for that.)
     `),
   }),
 
   // @TODO "that *should* be up to you to decide"
+  // @TODO Merge with conclusion?
   el(Slide, {
     children: md(`
-      ## Full Programming Language
+      ## JS CSS
 
       Use a full programming language to build your styles.
 
@@ -1477,19 +1483,196 @@ module.exports = [
       *Warning: With great power comes with great responsibility.*
     `),
     script: md(`
+      I've shown the advantages of using JavaScript to write CSS.
+
+
+
       I've shown that, yes, you *can* use JavaScript to write CSS, and that
-      there's maybe some advantages in doing so.
+      there's advantages in doing so.
 
       By using a turing-complete programming language to build styles,
       we're not limited by what our css preprocessor has implemented and
-      can instead use the full power of JavaScript to implement whatever logic
+      can instead use the full power of JavaScript to implement the logic
       we need.
 
       Of course with great power comes great responsibility. Maybe it's not a
-      good idea to do a network request to build your styles — but you have the
-      ability to decide that on your own.
+      good idea to do a network request to build your styles — but that should
+      be up to you to decide.
+
+      ----
+
+      We don't need to reinvent variables, functions, scoping, or anything
+      else.
+
+      JavaScript has all of these things just waiting to be used.
+
+      Use the power of JavaScript.
+
+      Thanks everyone!
     `),
   }),
+
+  el(Slide, {
+    children: md(`
+      ## What Else Can We Do?
+    `),
+    script: md(`
+      If we have our styles in JavaScript, what else does that enable?
+
+      There's a couple of things that are worth thinking about.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Warning: Mad Science
+    `),
+    script: md(`
+      And, consider the following highly experimental thinking. I don't know if any of this is a good idea, or if it will even work. So think about it, and give me your feedback.
+
+      Again, I don't know if any of this is a good idea or if it will even work, so think about it and give me your feedback!
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Runtime CSS
+    `),
+    script: md(`
+      One thing we could do, is generate CSS at runtime in the browser.
+
+      So say our CSS is defined in JavaScript like I've been talking about, and we use that JavaScript to generate CSS source for the browser to use.
+
+      There's two approaches to get that css source to the browser. One would be to generate our css source statically on the server, and send css files to the browser.
+
+      However, another approach would be to instead send the JavaScript source to the browser, and generate the CSS at runtime in the browser and inject a \`<style>\` tag with the css source into the document.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Runtime CSS
+
+      * Send JavaScript to browser instead of CSS
+      * Generate CSS at runtime in browser
+    `),
+    script: md(`
+      To recap:
+
+      We would send JavaScript to the browser instead of CSS.
+
+      And then we would use that JavaScript to generate our CSS.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Runtime CSS: Bundling and Loading
+
+      * Solve bundling once: For JavaScript
+      * No CSS to bundle
+      * On-demand loading
+      * Similar to Webpack's \`css-loader\` or Browserify's \`brfs\`
+    `),
+    script: md(`
+      So why would we do this?
+
+      The browser is going to need just JavaScript to generate your CSS. Not any actual CSS.
+
+      Assuming you've got a solution for bundling and loading JavaScript, say using Browserify or Webpack, you now have a solution for getting your CSS to the browser too.
+
+      And if you've split up your JavaScript bundle to be able to load components on-demand, you will also get on-demand loading of your CSS for free!
+
+      That's kind of neat. Webpack and Browserify have other approaches to doing similar things, but maybe this is better. And I think generating CSS in the browser let's us do other things, so bear with me.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## \`@supports\`
+    `),
+    script: md(`
+      CSS has a new feature called css feature queries.
+
+      It's kind of like media queries, but instead of testing things like the
+      device width, it lets us test if the browser supports a certain css
+      feature.
+    `),
+  }),
+
+  // @TODO Add bullets about polyfilling
+  el(Slide, {
+    children: md(`
+      ## \`@supports\`
+
+      \`\`\`css
+      @supports (display: flex) {
+        div { display: flex; }
+      }
+
+      @supports not (display: flex) {
+        div { float: left; }
+      }
+      \`\`\`
+    `),
+    script: md(`
+      This example lets us use flexbox if the browser supports it, otherwise we
+      use float.
+
+      Unfortunately, many browsers don't support feature queries yet.
+
+      Now, let's go back to generating CSS at runtime.
+
+      By generating CSS at runtime, we're able to have information about the browser environment when we're deciding what our CSS should be.
+
+      This means that we can polyfill the \`@supports\` rule.
+
+      When we come across a \`@supports\` rule, we would do the feature detection in JavaScript, and then decide whether or not to include the rules based on the result.
+
+      So with our example, when we come across those rules, we can do flexbox feature detection in JavaScript, and then determine if we should include the flex rule, or the float rule.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+    `),
+    script: md(`
+      One of the browser's roles in CSS is using selectors to match elements in the document to apply styles to.
+
+      What if we did this ourselves?
+
+      This means we would iterate each CSS rule, find elements that match the selector (by using querySelectorAll), and then use \`element.style\` to apply the styles.
+
+      Why would we do this? Again, it's about having more information.
+
+      This time we would have information about the hierarchy of elements in the document when we're applying styles to an element. Meaning that for each element, we could see what it's parent is, how many siblings it has, what it's children are. We would know exactly where in the document's hierarchy that element is.
+
+      This information lets us polyfill even more CSS features.
+
+      Take \`:first-child\` and \`:last-child\` for example.
+
+      If we know the number of siblings an element has, we can determine if it's the first child or not, and if it's the last child or not.
+
+      That's not too useful since most browsers support \`:first-child\` and \`:last-child\`.
+
+      But, with the same information about the document's hierarchy, we can polyfill something infinitely more useful: flexbox.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+    `),
+    script: md(`
+      Flexbox is a css layout module that makes it easy to express all the crazy things we do with floats and tables and various layout hacks. It also enables the holy grail of css: robust vertical centering.
+
+      If we know the flexbox styles we want to apply to an element, and we know it's parents and children and all of their styles, we *should* be able to calculate the dimensions and positions of all the elements.
+
+      In fact, there is already an npm module that calculates the layout of a tree of flexbox nodes, we would just need to get it the right inputs at the right time.
+
+      So I'll leave you with that. Come find me to talk about any of this, or you can tweet at me @parshap. Thanks for your time!
+    `),
+  }),
+
 
   // @TODO This is one of many possible ways we can write css using javascript
   // @TODO Recap: CSS has issues, preprocessors try to address issues, but have issues, i proposes we use javascript instead, wich is a robust and ubiqutous language that developer are already familiar with
@@ -1498,6 +1681,8 @@ module.exports = [
       # Conclusion
 
       ## Use the Power of JavaScript
+
+      *Disclaimer: With great power comes with great responsibility.*
     `),
     script: md(`
       We don't need to reinvent variables, functions, scoping, or anything
