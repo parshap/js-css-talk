@@ -52,7 +52,12 @@ var Slide = React.createClass({
         this.props.children,
         this.props.script && el("aside", {
           className: "notes",
-          children: this.props.script,
+          children: el("div", {
+            style: {
+              "font-size": "80%",
+            },
+            children: this.props.script,
+          }),
         }),
       ],
     });
@@ -77,6 +82,25 @@ var TwoColumns = React.createClass({
             width: "45%",
           },
           children: this.props.right,
+        }),
+      ],
+    });
+  },
+});
+
+var BigHeading = React.createClass({
+  render: function() {
+    return el("div", {
+      style: {
+        "margin-top": "100px",
+        "text-align": "center",
+      },
+      children: [
+        el("h1", {
+          children: this.props.heading
+        }),
+        this.props.subHeading && el("h2", {
+          children: this.props.subHeading
         }),
       ],
     });
@@ -168,7 +192,7 @@ module.exports = [
 
       My name is Parsha
 
-      I'm going to talk about CSS and JavaScript
+      I'm going to talk about mixing JavaScript and CSS
     `),
   }),
 
@@ -201,11 +225,10 @@ module.exports = [
   }),
  */
 
-  // @TODO Big
   el(Slide, {
-    children: md(`
-      ## Ideas, Not Code
-    `),
+    children: el(BigHeading, {
+      heading: "Ideas, Not Code",
+    }),
     script: md(`
       Before I start, I want to warn you. This talk is about ideas, not code.
 
@@ -215,11 +238,10 @@ module.exports = [
     `),
   }),
 
-  // @TODO big type
   el(Slide, {
-    children: md(`
-      ## CSS
-    `),
+    children: el(BigHeading, {
+      heading: "CSS",
+    }),
     script: md(`
       Before we talk about JavaScript, let's talk about CSS.
       CSS enables us to take website that looks like this.
@@ -339,7 +361,6 @@ module.exports = [
   }),
 
   el(Slide, {
-    // @TODO Fragments
     children: md(`
       ## But CSS Has Limitations
 
@@ -368,13 +389,35 @@ module.exports = [
     `),
   }),
 
-  // @TODO Improve styling - word cloud
   el(Slide, {
-    children: md(`
-      ## But Preprocessors!
-
-      LESS, Stylus, Sass, SCSS, Rework, DtCSS, Switch CSS, Compass, CSS-Crush, Clay, Myth, Resin, Styl
-    `),
+    children: [
+      md(`
+        ## But Preprocessors!
+      `),
+      el(TwoColumns, {
+        left: [
+          md(`
+            * LESS
+            * Stylus
+            * Sass
+            * DtCSS
+            * Switch CSS
+            * Compass
+            * CSS-Crush
+          `),
+        ],
+        right: [
+          md(`
+            * SCSS
+            * Rework
+            * Clay
+            * Myth
+            * Resin
+            * Styl
+          `),
+        ],
+      }),
+    ],
     script: md(`
       We've been able to work around a lot of these issues by creating new
       languages we call CSS preprocessors.
@@ -404,7 +447,7 @@ module.exports = [
   el(Slide, {
     children: [
       md(`
-        ## Stylus
+        ## Stylus: Ambiguous Syntax
       `),
       el(TwoColumns, {
         left: [
@@ -420,7 +463,45 @@ module.exports = [
             \`\`\`
           `),
         ],
-        // @TODO Fragment
+        right: null,
+      }),
+    ],
+    script: md(`
+      Let's take a look at Stylus first.
+
+      For those of you who are not familiar with Stylus, it has very terse
+      syntax, getting rid of things like curly braces and semicolons and uses
+      indentation to determine what block you're in.
+
+      And here's the compiled output.
+
+      We get pretty much what we expected - a form selector with color, and
+      font on inputs and textareas.
+
+      But what would happen if we accidentally swapped two lines with each
+      other.
+    `),
+  }),
+
+  el(Slide, {
+    children: [
+      md(`
+        ## Stylus: Ambiguous Syntax
+      `),
+      el(TwoColumns, {
+        left: [
+          md(`
+            ### Source
+
+            \`\`\`stylus
+            form
+              color #ccc
+              .field input
+              .field textarea
+                font Comic Sans
+            \`\`\`
+          `),
+        ],
         right: [
           md(`
             ### Compiled
@@ -439,12 +520,6 @@ module.exports = [
       }),
     ],
     script: md(`
-      Let's take a look at Stylus first.
-
-      For those of you who are not familiar with Stylus, it has very terse
-      syntax, getting rid of things like curly braces and semicolons and uses
-      indentation to determine what block you're in.
-
       And here's the compiled output.
 
       We get pretty much what we expected - a form selector with color, and
@@ -452,6 +527,39 @@ module.exports = [
 
       But what would happen if we accidentally swapped two lines with each
       other.
+    `),
+  }),
+
+  el(Slide, {
+    children: [
+      md(`
+        ## Stylus: Ambiguous Syntax
+      `),
+      el(TwoColumns, {
+        left: [
+          md(`
+            ### Source
+
+            \`\`\`stylus
+            form
+              .field input
+              color #ccc
+              .field textarea
+                font Comic Sans
+            \`\`\`
+          `),
+        ],
+        right: null,
+      }),
+    ],
+    script: md(`
+      I don't know if you guys saw what happened, let me do it again.
+
+      The line with the color property declaration got swapped with the input
+      selector below it.
+
+      Well this no longer makes sense. What do you guys think will happen?
+      Hopefully we get a compile-time error about this.
     `),
   }),
 
@@ -491,14 +599,6 @@ module.exports = [
       }),
     ],
     script: md(`
-      I don't know if you guys saw what happened, let me do it again.
-
-      The line with the color property declaration got swapped with the input
-      selector below it.
-
-      Well this no longer makes sense. What do you guys think will happen?
-      Hopefully we get a compile-time error about this.
-
       Nope. Stylus gets a bit confused and instead thinks the color declaration
       is a selector. The output is still valid CSS, so there's no error.
 
@@ -703,7 +803,51 @@ module.exports = [
     `),
   }),
 
-  // @TODO Fragments
+  el(Slide, {
+    children: [
+      el("h2", {
+        children: "Variable Values",
+      }),
+      el(TwoColumns, {
+        left: [
+          md(`
+            ### SCSS
+
+            \`\`\`css
+            $headingColor: red;
+            h2 {
+              color: $headingColor;
+            }
+            $headingColor: white;
+            \`\`\`
+
+            ---
+
+            #### Compiled
+
+            \`\`\`css
+            h2 {
+              color: red;
+            }
+            \`\`\`
+          `),
+        ],
+        right: null,
+      }),
+    ],
+    script: md(`
+      First let's look at how Sass handles variables.
+
+      We have a variable, \`headingColor\` that's used to declare the color in
+      h2 elements. But the variable is assigned a value twice. Once before we
+      use it, and once after we use it.
+
+      Is it clear what the compiled result is going to be?
+
+      With Sass, we get the value from the first asignment.
+    `),
+  }),
+
   el(Slide, {
     children: [
       el("h2", {
@@ -759,16 +903,6 @@ module.exports = [
       }),
     ],
     script: md(`
-      First let's look at how Sass handles variables.
-
-      We have a variable, \`headingColor\` that's used to declare the color in
-      h2 elements. But the variable is assigned a value twice. Once before we
-      use it, and once after we use it.
-
-      Is it clear what the compiled result is going to be?
-
-      With Sass, we get the value from the first asignment.
-
       Now let's look at LESS. We have the same thing, a variable that gets
       assigned a value twice, and we're using it once in between the two
       assignments.
@@ -802,11 +936,10 @@ module.exports = [
   }),
  */
 
-  // @TODO: Big type
   el(Slide, {
-    children: md(`
-      ## Language Design is Hard
-    `),
+    children: el(BigHeading, {
+      heading: "Language Design is Hard",
+    }),
     script: md(`
       Getting programming languages right is hard.
 
@@ -831,13 +964,11 @@ module.exports = [
     `),
   }),
 
-  // @TODO Big type - heading/subheading?
   el(Slide, {
-    children: md(`
-      ## JS CSS
-
-      Can JS do CSS better?
-    `),
+    children: el(BigHeading, {
+      heading: "JS CSS",
+      subHeading: "Can JS do CSS better?",
+    }),
     script: md(`
       Could we use JavaScript to write CSS in a better way?
 
@@ -846,7 +977,32 @@ module.exports = [
     `),
   }),
 
-  // @TODO Fragments
+  el(Slide, {
+    children: [
+      md(`
+        ## CSS
+      `),
+      el(TwoColumns, {
+        left: md(`
+          ## CSS
+
+          \`\`\`css
+          /* styles.css */
+            .button {
+              color: red;
+            }
+          \`\`\`
+        `),
+        right: null,
+      }),
+    ],
+    script: md(`
+      Let's start with this rule. Here it is in CSS. A red button.
+
+      Alright, now let's convert it to JavaScript.
+    `),
+  }),
+
   el(Slide, {
     children: [
       md(`
@@ -877,10 +1033,6 @@ module.exports = [
       }),
     ],
     script: md(`
-      Let's start with this rule. Here it is in CSS. A red button.
-
-      Alright, now let's convert it to JavaScript.
-
       There. It's actually not too different. We basically add some quotes,
       swap the semicolon for a comma, and we've got valid JavaScript!
 
@@ -1076,7 +1228,6 @@ module.exports = [
     `),
   }),
 
-  // @TODO fragments?
   el(Slide, {
     children: md(`
       # Yes!
@@ -1098,7 +1249,7 @@ module.exports = [
 
   el(Slide, {
     children: md(`
-      ## *Why* JS CSS?
+      ## Why JS CSS?
 
       * Constants and variables
       * Extend the language (functions)
@@ -1390,8 +1541,49 @@ module.exports = [
     `),
   }),
 
-  // @TODO Fragments
-  // @TODO Add comments later?
+  el(Slide, {
+    children: md(`
+      ## Share Constants
+
+      \`\`\`css
+      /* styles.css */
+      .button {
+        color: red;
+      }
+      \`\`\`
+    `),
+    script: md(`
+      * With CSS we have no way of sharing values between CSS and our front-end
+        code.
+      * For example, at the top, we have some CSS code that defines a color.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Share Constants
+
+      \`\`\`css
+      /* styles.css */
+      .button {
+        color: red;
+      }
+      \`\`\`
+
+      \`\`\`js
+      /* app.js */
+      var canvas = document.querySelector("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "red";
+      ctx.fillText("Hello!", 0, 0);
+      \`\`\`
+    `),
+    script: md(`
+      * Then, we have some JavaScript code that draws to a canvas.
+      * We want the canvas drawing to match the color we have in CSS.
+    `),
+  }),
+
   el(Slide, {
     children: md(`
       ## Share Constants
@@ -1412,11 +1604,6 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
-      * With CSS we have no way of sharing values between CSS and our front-end
-        code.
-      * For example, at the top, we have some CSS code that defines a color.
-      * Then, we have some JavaScript code that draws to a canvas.
-      * We want the canvas drawing to match the color we have in CSS.
       * You guys have probably run into something like this before. You end up having to leave these nasty comments letting other developers know they need to update both places when one changes.
     `),
   }),
@@ -1482,10 +1669,9 @@ module.exports = [
     `),
   }),
 
-  // @TODO "NPM!" -- big font?
   el(Slide, {
     children: md(`
-      ## npm!
+      # npm!
 
       * Best. Package. Manager.
       * 150,000+ modules
@@ -1508,8 +1694,6 @@ module.exports = [
     `),
   }),
 
-  // @TODO "that *should* be up to you to decide"
-  // @TODO Merge with conclusion?
   el(Slide, {
     children: md(`
       ## JS CSS
@@ -1519,6 +1703,8 @@ module.exports = [
       * 150,000 modules at your disposable? Yes!
       * Want to use \`Math.random()\` or \`Date.now()\`? You can!
       * Asynchronous logic to build styles? Ok…
+
+      *With great power comes great responsibility.*
     `),
     script: md(`
       I've shown that there *are* advantages of using JavaScript to write CSS.
@@ -1534,15 +1720,7 @@ module.exports = [
       JavaScript has all of these things just waiting to be used.
 
       Use the power of JavaScript.
-    `),
-  }),
 
-  // @TODO Type
-  el(Slide, {
-    children: md(`
-      *Warning: With great power comes with great responsibility.*
-    `),
-    script: md(`
       Of course with great power comes great responsibility. Maybe it's not a
       good idea to do a network request to build your styles — but that should
       be up to you to decide.
@@ -1561,9 +1739,10 @@ module.exports = [
   }),
 
   el(Slide, {
-    children: md(`
-      ## Warning: Mad Science
-    `),
+    children: el(BigHeading, {
+      heading: "Warning",
+      subHeading: "Mad Science",
+    }),
     script: md(`
       Let me pause to say, you should consider the following highly experimental thinking.
 
@@ -1573,13 +1752,11 @@ module.exports = [
     `),
   }),
 
-  // @TODO Big font
   el(Slide, {
-    children: md(`
-      # Take Over the Browser
-
-      ## Use JavaScript to Apply Styles
-    `),
+    children: el(BigHeading, {
+      heading: "Take Over the Browser",
+      subHeading: "Use JavaScript to Apply Styles",
+    }),
     script: md(`
       We can use JavaScript to apply styles in the browser.
 
@@ -1602,7 +1779,7 @@ module.exports = [
       advantages, doing so is not needed for the following concepts. In fact,
       you could be using just regular old CSS.
 
-      What we do need is a CSS abstract syntax tree in the browser.
+      What we do need is a CSS abstract syntax tree, or AST, in the browser.
 
       What I mean by this is we need to be able to take a css source string,
       and be able to inspect it and understand exactly what's going on in there.
@@ -1633,6 +1810,31 @@ module.exports = [
 
       We have access to the selector, and know exactly what properties are
       being set and what the values are.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Prerequisite: CSS AST
+
+      \`\`\`js
+      > var stringify = require("css-stringify")
+      > stringify({
+          rules: [ {
+           type: 'rule',
+           selectors: [ '.button' ],
+           declarations:
+            [ { type: 'declaration',
+                property: 'color',
+                value: 'red' } ] } ]
+      })
+      ".button { color: red }"
+    `),
+    script: md(`
+      And of course, we can do the inverse and take an AST and generate a CSS
+      source string.
+
+      So what does this enable us to do?
     `),
   }),
 
@@ -1715,7 +1917,6 @@ module.exports = [
     `),
   }),
 
-  // @TODO Add bullets about polyfilling
   el(Slide, {
     children: md(`
       ## \`@supports\`
@@ -1735,23 +1936,63 @@ module.exports = [
       use float.
 
       Unfortunately, many browsers don't support feature queries yet.
+    `),
+  }),
 
-      Now, let's go back to generating CSS at runtime.
+  el(Slide, {
+    children: md(`
+      ## \`@supports\`
 
-      By generating CSS at runtime, we're able to have information about the browser environment when we're deciding what our CSS should be.
+      1. Get information about browser environment
+      2. Use information to transform CSS AST
+      3. Feed new CSS back into browser
+    `),
+    script: md(`
+      But, if we're in the browser runtime and then we have access to
+      information about the browser environment, like whether or not it
+      supports a certain CSS feature.
 
-      This means that we can polyfill the \`@supports\` rule.
+      And we have access to our CSS AST.
 
-      When we come across a \`@supports\` rule, we would do the feature detection in JavaScript, and then decide whether or not to include the rules based on the result.
+      We can use that information about the browser and transform our CSS AST to a new one.
 
-      So with our example, when we come across those rules, we can do flexbox feature detection in JavaScript, and then determine if we should include the flex rule, or the float rule.
+      Then we can take the new CSS AST, and put it back into the browser by injecting a
+      \`<style>\` tag into the document.
+
+      This means that we can polyfill css feature queries.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## \`@supports\`
+
+      \`\`\`css
+      @supports (display: flex) {
+        div { display: flex; }
+      }
+
+      @supports not (display: flex) {
+        div { float: left; }
+      }
+      \`\`\`
+    `),
+    script: md(`
+
+      We would walk the CSS AST.
+
+      When we come across a \`@supports\` rule, we would do the feature
+      detection in JavaScript, and then generate a new CSS AST either including
+      or excluding the rule depending on the result of the feature detection.
     `),
   }),
 
   el(Slide, {
     children: [
       md(`
-        ## Taking Over The Browser
+        # Take Over the Browser
+
+        ## Use JavaScript to Apply Styles
       `),
       el(TwoColumns, {
         left: md(`
@@ -1777,11 +2018,49 @@ module.exports = [
       match it to the span that is a descendent of a div, and apply the
       color red to it.
 
-      What if we did this ourselves?
+      Another way we can take over applying styles in the browser is doing this ourselves.
     `),
   }),
 
-  // @TODO Line by line
+  el(Slide, {
+    children: md(`
+        ## Taking Over The Browser
+
+        \`\`\`js
+        rules.forEach(function(rule) {
+          var elements = document.querySelectorAll(rule.selector);
+        });
+        \`\`\`
+    `),
+    script: md(`
+      This means for each css rule, we would find all of the elements that match the rule's selector.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+        ## Taking Over The Browser
+
+        \`\`\`js
+        rules.forEach(function(rule) {
+          var elements = document.querySelectorAll(rule.selector);
+          elements.forEach(function(element) {
+            element.style = rule.style;
+          });
+        });
+        \`\`\`
+    `),
+    script: md(`
+      Then for each matched element, we would apply the rule's styles to the element.
+
+      Why would we do this? Again, it's about having information.
+
+      This time we would have information about the hierarchy of elements in the document when we're applying styles to an element. Meaning that for each element, we could see what it's parent is, how many siblings it has, what it's children are. We would know exactly where in the document's hierarchy that element is.
+
+      This information lets us polyfill even more CSS features.
+    `),
+  }),
+
   el(Slide, {
     children: md(`
         ## Taking Over The Browser
@@ -1800,7 +2079,7 @@ module.exports = [
 
       Then for each matched element, we would apply the rule's styles to the element.
 
-      Why would we do this? Again, it's about having more information.
+      Why would we do this? Again, it's about having information.
 
       This time we would have information about the hierarchy of elements in the document when we're applying styles to an element. Meaning that for each element, we could see what it's parent is, how many siblings it has, what it's children are. We would know exactly where in the document's hierarchy that element is.
 
