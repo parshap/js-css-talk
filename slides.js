@@ -92,8 +92,10 @@ function md(str) {
   });
 }
 
+// @TODO spell check
+// @TODO: Remove extra commas (everywhere)
+
 module.exports = [
-  // Cover slide does not use Slide component
   el(Slide, {
     style: {
       "text-align": "center",
@@ -161,14 +163,64 @@ module.exports = [
         }),
       ],
     }),
+    script: md(`
+      Hi everyone!
+
+      My name is Parsha
+
+      I'm going to talk about CSS and JavaScript
+    `),
   }),
 
   el(Slide, {
     children: md(`
-      ## CSS is Awesome
+      ## Parsha Pourkhomami
+
+      @parshap
+      https://github.com/parshap
+      https://twitter.com/parshap
+    `),
+    script: md(`
+      First let me tell you a tiny bit about myself.
+
+      I'm a computer scientist and software engineer.
+
+      I work at a tiny company called *aboutLife*, where we're trying to make
+      it easier to get long-term financial advice.
+
+      I've been hacking on websites and writing JavaScript and CSS since the
+      mid '90s.
+
+      And I'm passionate about enabling other developers and making their lives easier.
+
+      So I like working on tooling, libraries, and general patterns.
+
+      You can find me on GitHub and Twitter and various other places under the handle *parshap*.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## Outline
+
+      * CSS
+      * Issues with CSS
+      * Workarounds to these issues
+      * Issues with workarounds
+      * JavaScript CSS
+    `),
+    script: md(`
+    `),
+  }),
+
+  // @TODO big type
+  el(Slide, {
+    children: md(`
+      ## CSS is Great
     `),
     script: md(`
       Before we talk about JavaScript, let's talk about CSS.
+      CSS enables us to take website that looks like this.
     `),
   }),
 
@@ -178,7 +230,9 @@ module.exports = [
       src: "/images/virginamerica-nocss.png",
     }),
     script: md(`
-      CSS also lets us take websites from looking like this.
+      This is Virgin America's website without any CSS.
+
+      Something that's not very friendly or visually appealing
     `),
   }),
 
@@ -188,7 +242,9 @@ module.exports = [
       src: "/images/virginamerica-css.png",
     }),
     script: md(`
-      To this.
+      And turn it into this!
+
+      CSS even makes Craigslist look better. Going from this.
     `),
   }),
 
@@ -198,7 +254,7 @@ module.exports = [
       src: "/images/craigslist-nocss.png",
     }),
     script: md(`
-      It even makes Craigslist look better.
+      To this.
     `),
   }),
 
@@ -208,7 +264,17 @@ module.exports = [
       src: "/images/craigslist-css.png",
     }),
     script: md(`
-      And I didn't even think Craigslist used css.
+      And I thought Craigslist didn't even use css!
+    `),
+  }),
+
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ *BLANK* ~
+
+      Aside from enabling rich user interfaces, CSS also lets us create cool
+      animations and other visual affects.
     `),
   }),
 
@@ -219,7 +285,10 @@ module.exports = [
       },
     }),
     script: md(`
-      CSS lets us create cool animations like this Twitter Fail Whale
+      Like this Twitter Fail Whale.
+
+      Which uses clever combinations of CSS properties to create various shapes
+      and keyframe animations to animate them.
     `),
   }),
 
@@ -230,9 +299,24 @@ module.exports = [
       },
     }),
     script: md(`
-      And whatever this thing is.
+      And this cool animation — whatever it is.
 
-      Using just CSS.
+      This animation utilizes the GPU to composite several layers together and
+      rotate them on top of eachother.
+    `),
+  }),
+
+  // @TODO
+  el(Slide, {
+    children: md(`
+      ## CSS vs OpenGL
+    `),
+    script: md(`
+      It's great because, as developers, we're able to take advantage of
+      advanced graphics rendering techniques by writing just a few lines of
+      high-level declarattive code.
+
+      Instead of low-level procedural code like this.
     `),
   }),
 
@@ -249,31 +333,36 @@ module.exports = [
   }),
 
   el(Slide, {
-    // @TODO Negate list
-    // @TODO Maybe fragments
-    // @TODO Better descriptions
+    // @TODO Fragments
     children: md(`
-      ## But CSS Has Issues
+      ## But CSS Has Limitations
 
-      Missing features…
+      * No constants or variables
+      * No way to extend the language
+      * Bad dependency management
+      * No code sharing or reuse
+      * No interopability with JS
 
-      * Variables & functions
-      * Dependency management
-      * Code sharing / reuse
-      * Interoperability
+      Sometimes limitations are good. Sometimes not.
     `),
     script: md(`
-      But CSS does have some issues.
+      But CSS does have its fair share of issues and limitations.
 
-      It's missing some important features:
+      * There's no way to define constants
+      * There's no way to extend the language with our own logic and functions
+      * There's basically no module system or dependency management — all we have is the \`@import\` statement which has restricting performance characteristics
+      * There's no unit of code reuse or meta programming
+      * And there's no interopability between CSS and the rest of our front-end code
 
-      * Being able to extend the language with variables & functions
-      * No dependency management
-      * No unit of code reuse
+      Sure, sometimes these limitations are okay and they can even force us to
+      write straight-forward easy to understand code.
+
+      But in large apps, these limitations often lead us to copy-and-pasted and
+      hard-to-maintain code.
     `),
   }),
 
-  // @TODO List doesn't show
+  // @TODO Improve styling - word cloud
   el(Slide, {
     children: md(`
       ## But Preprocessors!
@@ -281,144 +370,146 @@ module.exports = [
       LESS, Stylus, Sass, SCSS, Rework, DtCSS, Switch CSS, Compass, CSS-Crush, Clay, Myth, Resin, Styl
     `),
     script: md(`
-      We've solved a lot of these issues by inventing new
+      We've been able to work around a lot of these issues by creating new
       languages we call CSS preprocessors.
     `),
   }),
 
-  // @TODO No "full-on"
-  // @TODO Separate slide for each bullet list?
-  // @TODO Refer to upcoming slides
-  // Transition: "Let's look at some examples of what I mean""
   el(Slide, {
     children: md(`
       ## But Preprocessors Are Weird…
 
-      * Almost full-on languages, but not quite
-      * Special syntax
-      * Not thought-out semantics
+      * Ambiguous syntax
+      * Non-standard semantics
+      * *Almost* a real language, but not quite
     `),
-  }),
-
-  // @TODO Explain code more
-  // @TODO Fragment compiled output
-  // "For people who are not familiar with stylus, it has very terse syntax and lets you nest selectors using indentation"
-  // @TODO Explain output
-  el(Slide, {
-    children: el("div", {
-      className: "clearfix",
-      children: [
-        el("h2", {
-          children: "Stylus: Ambiguities",
-        }),
-        el(TwoColumns, {
-          left: [
-            md(`
-              ### Stylus
-
-              \`\`\`stylus
-              .unicorn-form
-                color #bad
-                fieldset input
-                textarea
-                  font Comic Sans
-              \`\`\`
-            `),
-          ],
-          right: [
-            md(`
-              ### Compiled
-
-              \`\`\`css
-              .unicorn-form {
-                color: #bad;
-              }
-              .unicorn-form input,
-              .unicorn-form textarea {
-                font: Comic Sans;
-              }
-              \`\`\`
-            `),
-          ],
-        }),
-      ],
-    }),
-  }),
-
-  el(Slide, {
-    children: el("div", {
-      className: "clearfix",
-      children: [
-        el("h2", {
-          children: "Stylus Ambiguities",
-        }),
-        el(TwoColumns, {
-          left: [
-            md(`
-              ### Stylus
-
-              \`\`\`stylus
-              .unicorn-form
-                fieldset input
-                color #bad
-                textarea
-                  font Comic Sans
-              \`\`\`
-            `),
-          ],
-        }),
-      ],
-    }),
-  }),
-
-  // @TODO Point out invalid css
-  // output is not expected, no error
-  el(Slide, {
-    children: el("div", {
-      className: "clearfix",
-      children: [
-        el("h2", {
-          children: "Stylus: Ambiguities",
-        }),
-        el(TwoColumns, {
-          left: [
-            md(`
-              ### Stylus
-
-              \`\`\`stylus
-              .unicorn-form
-                fieldset input
-                color #bad
-                textarea
-                  font Comic Sans
-              \`\`\`
-            `),
-          ],
-          right: [
-            md(`
-              ### Compiled
-
-              \`\`\`css
-              .unicorn-form {
-                fieldset: input;
-                color: #bad;
-              }
-              .unicorn-form textarea {
-                font: Comic Sans;
-              }
-              \`\`\`
-            `),
-          ],
-        }),
-      ],
-    }),
     script: md(`
-      ...
+      But preprocessors are weird.
 
-      What was previously a selector is now treated as a property
-      declaration.
+      They often have ambiguous syntax and non-standard semantics.
+
+      They give us features that look and smell like things we're used to,
+      like functions, but then their behavior is different in unexpected ways.
+
+      Let me show a couple of examples of what I mean.
     `),
   }),
+
+  el(Slide, {
+    children: [
+      md(`
+        ## Stylus
+      `),
+      el(TwoColumns, {
+        left: [
+          md(`
+            ### Source
+
+            \`\`\`stylus
+            form
+              color #ccc
+              .field input
+              .field textarea
+                font Comic Sans
+            \`\`\`
+          `),
+        ],
+        // @TODO Fragment
+        right: [
+          md(`
+            ### Compiled
+
+            \`\`\`css
+            form {
+                color: #ccc;
+            }
+            form .field input,
+            form .field textarea {
+                font: Comic Sans;
+            }
+            \`\`\`
+          `),
+        ],
+      }),
+    ],
+    script: md(`
+      Let's take a look at Stylus first.
+
+      For those of you who are not familiar with Stylus, it has very terse
+      syntax, getting rid of things like curly braces and semicolons and uses
+      indentation to determine what block you're in.
+
+      And here's the compiled output.
+
+      We get pretty much what we expected - a form selector with color, and
+      font on inputs and textareas.
+
+      But what would happen if we accidentally swapped two lines with each
+      other.
+    `),
+  }),
+
+  el(Slide, {
+    children: [
+      md(`
+        ## Stylus: Ambiguous Syntax
+      `),
+      el(TwoColumns, {
+        left: [
+          md(`
+            ### Source
+
+            \`\`\`stylus
+            form
+              .field input
+              color #ccc
+              .field textarea
+                font Comic Sans
+            \`\`\`
+          `),
+        ],
+        // @TODO Fragment
+        right: [
+          md(`
+            ### Compiled
+
+            \`\`\`css
+            form .field input,
+            form color #ccc,
+            form .field textarea {
+                font: Comic Sans;
+            }
+            \`\`\`
+          `),
+        ],
+      }),
+    ],
+    script: md(`
+      I don't know if you guys saw what happened, let me do it again.
+
+      The line with the color property declaration got swapped with the input
+      selector below it.
+
+      Well this no longer makes sense. What do you guys think will happen?
+      Hopefully we get a compile-time error about this.
+
+      Nope. Stylus gets a bit confused and instead thinks the color declaration
+      is a selector. The output is still valid CSS, so there's no error.
+
+      Hopefully the developer catches this, but it's going to take some effort
+      to debug.
+    `),
+  }),
+
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      Alright… that was weird… but ok. Let's look at LESS.
+    `),
+  }),
+
 
   // @TODO Transition: Let's look at LESS
   el(Slide, {
@@ -428,6 +519,9 @@ module.exports = [
       \`\`\`less
       @import "foo.less";
       \`\`\`
+    `),
+    script: md(`
+      LESS gives us a way to import dependencies.
     `),
   }),
 
@@ -447,6 +541,26 @@ module.exports = [
       @import (optional) "foo.less";
       \`\`\`
     `),
+    script: md(`
+      Actually, less gives us 8 ways to import dependencies.
+
+      Each way with its own different semantics.
+
+      Actually… some of them have the same semantics as others under certain
+      conditions, like depending on the file extension.
+
+      Basically you end up having to look at the docs every time you need to do
+      this.
+    `),
+  }),
+
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      Alright… let's move on.
+    `),
   }),
 
   el(Slide, {
@@ -458,6 +572,11 @@ module.exports = [
         margin: 10px - 2px;  /* margin: 8px */
       }
       \`\`\`
+    `),
+    script: md(`
+      LESS lets us do basic arithmetic.
+
+      Here we see 10px - 2px is 8px. Great.
     `),
   }),
 
@@ -471,6 +590,10 @@ module.exports = [
         margin: 10px -2px;   /* margin: 10px -2px */
       }
       \`\`\`
+    `),
+    script: md(`
+      But you better be careful with spaces, beacuse adding or removing a space
+      might change the result. That's right — whitespace sensitive math.
     `),
   }),
 
@@ -486,23 +609,20 @@ module.exports = [
       }
       \`\`\`
     `),
+    script: md(`
+      And be careful with adding parenthesis too, because that will change the
+      behavior too.
+    `),
   }),
 
-  // @TODO Intro: "LESS has an awesome feature... it works... it works... it breaks"
-  // "LESS: Unit Conversion"
-  // "Even though the units are different, The values are the same, so you should expect the same result"
-  // "Let's try the same thing with division"
-  // "When we have the same units, things work as expected"
-  // "BUT... when we change the units, everything breaks"
   el(Slide, {
-    children: md(`
-      ## LESS: Unit Conversion
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
 
-      \`\`\`less
-      body {
-        font-size: 10cm - 2cm;  /* 8cm */
-      }
-      \`\`\`
+      Aright. So you just need to be *real* careful when doing arithmetic.
+
+      What else can LESS do?
     `),
   }),
 
@@ -512,10 +632,21 @@ module.exports = [
 
       \`\`\`less
       body {
-        font-size: 10cm - 2cm;  /* 8cm */
-        font-size: 10cm - 20mm; /* 8cm */
+        font-size: 10cm - 1cm;  /* 9cm */
+        font-size: 10cm - 10mm; /* 9cm */
       }
       \`\`\`
+    `),
+    script: md(`
+      LESS has this awesome feature. It can automatically convert units for us.
+
+      \`10cm - 1cm\` is \`9cm\`.
+
+      And if we switch up the units,
+      \`10cm\` - \`10mm\` is still \`9cm\`. Same values, different units. Both
+      still equal to 9cm. Makes sense.
+
+      Let's see this in action with division!
     `),
   }),
 
@@ -525,11 +656,15 @@ module.exports = [
 
       \`\`\`less
       body {
-        font-size: 10cm - 2cm;  /* 8cm */
-        font-size: 10cm - 20mm; /* 8cm */
-        font-size: 10cm / 2cm;  /* 5cm */
+        font-size: 10cm - 1cm;  /* 9cm */
+        font-size: 10cm - 10mm; /* 9cm */
+        font-size: 10cm / 1cm;  /* 10cm */
       }
       \`\`\`
+    `),
+    script: md(`
+      When we have the same units, \`10cm / 1cm\`, things work as you'd expect. We
+      get \`10cm\`.
     `),
   }),
 
@@ -539,56 +674,48 @@ module.exports = [
 
       \`\`\`less
       body {
-        font-size: 10cm - 2cm;  /* 8cm */
-        font-size: 10cm - 20mm; /* 8cm */
-        font-size: 10cm / 2cm;  /* 5cm */
-        font-size: 10cm / 20mm; /* 0.5cm */
+        font-size: 10cm - 1cm;  /* 9cm */
+        font-size: 10cm - 10mm; /* 9cm */
+        font-size: 10cm / 1cm;  /* 10cm */
+        font-size: 10cm / 10mm; /* 1cm */
       }
       \`\`\`
     `),
+    script: md(`
+      But be careful, because if you mix units when you're doing division, you're gonna have a bad
+      time. Unit conversions silently fail with division.
+
+      When we do \`10cm / 10mm\`, LESS ignores the unit on the second number and
+      gives us the unexpected result: 10cm.
+    `),
   }),
 
-  // @TODO Explain code blocks one by one
-  // @TODO swap less/scss
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      Alright. Let's look at variables.
+    `),
+  }),
+
+  // @TODO Fragments
   el(Slide, {
     children: [
       el("h2", {
-        children: "Nuanced Semantics",
+        children: "Variable Values",
       }),
       el(TwoColumns, {
         left: [
           md(`
-            ### LESS
-
-            \`\`\`css
-            @my-color: red;
-            h2 {
-              color: @my-color;
-            }
-            @my-color: white;
-            \`\`\`
-
-            ---
-
-            #### Compiled
-
-            \`\`\`css
-            h2 {
-              color: white;
-            }
-            \`\`\`
-          `),
-        ],
-        right: [
-          md(`
             ### SCSS
 
             \`\`\`css
-            $my-color: red;
+            $headingColor: red;
             h2 {
-              color: $my-color;
+              color: $headingColor;
             }
-            $my-color: white;
+            $headingColor: white;
             \`\`\`
 
             ---
@@ -602,8 +729,60 @@ module.exports = [
             \`\`\`
           `),
         ],
+        right: [
+          md(`
+            ### LESS
+
+            \`\`\`css
+            @headingColor: red;
+            h2 {
+              color: @headingColor;
+            }
+            @headingColor: white;
+            \`\`\`
+
+            ---
+
+            #### Compiled
+
+            \`\`\`css
+            h2 {
+              color: white;
+            }
+            \`\`\`
+          `),
+        ],
       }),
     ],
+    script: md(`
+      First let's look at how Sass handles variables.
+
+      We have a variable, \`headingColor\` that's used to declare the color in
+      h2 elements. But the variable is assigned a value twice. Once before we
+      use it, and once after we use it.
+
+      Is it clear what the compiled result is going to be?
+
+      With Sass, we get the value from the first asignment.
+
+      Now let's look at LESS. We have the same thing, a variable that gets
+      assigned a value twice, and we're using it once in between the two
+      assignments.
+
+      What do you think the result is going to be?
+
+      Well, it's the opposite as Sass. LESS uses the last value assigned to a
+      variable, regardless of where you're using it.
+    `),
+  }),
+
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      Okie doke. Let's look at scoping.
+    `),
   }),
 
   // @TODO
@@ -611,7 +790,7 @@ module.exports = [
   // "Most programmers don't expect this because they come from others langauges where this doesnt' happen"
   el(Slide, {
     children: md(`
-      ## LESS Variable Scoping
+      ## Variable Scoping
     `),
     script: md(`
     `),
@@ -625,78 +804,85 @@ module.exports = [
     script: md(`
       Getting programming languages right is hard.
 
-      Syntax, scoping, types, error handling. These are all complicated things.
+      Syntax, scoping, types, compilers, error handling. These are all
+      complicated things.
 
       It's understandable that these preprocessor languages have gotten
       some of these things wrong.
     `),
   }),
 
-  // @TODO This and next slide confusing
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      Alright. So CSS is cool. But it has some issues.
+
+      Preprocessors solve some of these issues, but have problems of their own.
+
+      Is there a better way?
+    `),
+  }),
+
   // @TODO Big type - heading/subheading?
-  // @TODO Combine? "Can we express css using js? Will it be better?"
   el(Slide, {
     children: md(`
       ## JS CSS
 
-      Can JavaScript do better?
+      Can JS do CSS better?
     `),
     script: md(`
-      Can we do better using JavaScript?
+      Could we use JavaScript to write CSS in a better way?
+
+      Well, let's take a look at what using JavaScript to write CSS might
+      look like. Let's express a CSS rule in JavaScript.
     `),
   }),
 
+  // @TODO Fragments
   el(Slide, {
-    children: md(`
-      ## JS CSS
+    children: [
+      md(`
+        ## CSS
+      `),
+      el(TwoColumns, {
+        left: md(`
+          ## CSS
 
-      Can we express CSS using JavaScript?
-    `),
+          \`\`\`css
+          /* styles.css */
+            .button {
+              color: red;
+            }
+          \`\`\`
+        `),
+        right: md(`
+          ## JS
+
+          \`\`\`js
+          var styles = {
+            ".button": {
+              color: "red",
+            }
+          };
+          \`\`\`
+        `),
+      }),
+    ],
     script: md(`
-      Well before we decide if it's better, is it even possible to express CSS
-      using JavaScript?
+      Let's start with this rule. Here it is in CSS. A red button.
 
-      Let's take a look at what CSS in JavaScript might look like.
+      Alright, now let's convert it to JavaScript.
+
+      There. It's actually not too different. We basically add some quotes,
+      swap the semicolon for a comma, and we've got valid JavaScript!
+
+      Alright, so that's a pretty basic rule. What if we wanted to style the
+      hover state of our button?
     `),
   }),
 
-  // @TODO Side-by-side
-  // @TODO Maybe explain: "add some quotations, etc"
-  el(Slide, {
-    children: md(`
-      ## CSS
-
-      \`\`\`css
-      /* styles.css */
-        .button {
-          color: red;
-        }
-      \`\`\`
-    `),
-    script: md(`
-      What would it look like if we define this CSS in JavaScript?
-    `),
-  }),
-
-  el(Slide, {
-    children: md(`
-      ## JS
-
-      \`\`\`js
-      var styles = {
-        ".button": {
-          color: "red",
-        },
-      }
-      \`\`\`
-    `),
-    script: md(`
-      It's actually not too different.
-    `),
-  }),
-
-  // @TODO: "Let's see what a pseudo selector looks like"
-  // @TODO Heading, explain, code example
   el(Slide, {
     children: md(`
       ## Pseudo Selectors
@@ -714,11 +900,12 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
+      Here's what a pseudo selector could look like.
+
+      Not much different from CSS or one of our preprocessors.
     `),
   }),
 
-  // @TODO: Intro
-  // @TODO: Remove extra commas (everywhere)
   el(Slide, {
     children: md(`
       ## Child & Descendant Selectors
@@ -740,10 +927,12 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
+      We could also nest child selectors in a similar fashion.
+
+      Nothing too surprising here I hope.
     `),
   }),
 
-  // @TODO put @media above .button
   el(Slide, {
     children: md(`
       ## Media Queries
@@ -761,6 +950,7 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
+      Here's adding a media query.
     `),
   }),
 
@@ -781,29 +971,42 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
+      Sometimes in CSS we want to define a property more than once. We do this
+      to provide fallacks for browsers that don't support something.
+
+      In JS we'll use arrays to define more than one value for a property.
+    `),
+  }),
+
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      So we've got rules with selectors, pseudo selectors, child selectors, any kind of selector really.
+      And we've got property fallbacks, media queries, and all kinds of at-rules.
+
+      Well… that's essentially all of CSS.
     `),
   }),
 
   el(Slide, {
     children: md(`
-      ## JS CSS
-
-      Can we express CSS using JavaScript?
-
       # Yes!
 
-      JavaScript can do anything!
+      We can *express* CSS using JS.
     `),
     script: md(`
-      So, yes! We *can* use JavaScript to express CSS rules using just literal
-      expressions — essentially json.
+      So it's safe to say, we *can* express it all using JavaScript.
+
+      And it's simple too! We're just using literal expressions —
+      essentially json.
     `),
   }),
 
-  // @TODO: Refer to code - "Here we have a styles object for button styles"
   el(Slide, {
     children: md(`
-      ## How?
+      ## How to Use in Browser
 
       \`\`\`js
       > styles
@@ -816,16 +1019,16 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
-      I've shown how to use JavaScript to express CSS rules — but all we have
-      are these JavaScript objects that represent CSS.
+      But, so far, we've only seen how to to *express* CSS using JavaScript.
 
-      How do we actually use this to style elements in a browser?
+      We've got these Plain Old JavaScript Objects containing CSS rules and
+      whatnot, but how do we actually use this to style elements in a browser?
     `),
   }),
 
   el(Slide, {
     children: md(`
-      ## How?
+      ## How to Use in Browser
 
       \`\`\`js
       > toCSS(styles)
@@ -839,30 +1042,46 @@ module.exports = [
       All we really need is a function that takes one of these style objects
       and returns a CSS source string.
 
-      Now we can use this function to generate CSS for the browser to use.
+      Now we can use this function to generate actual CSS for the browser to use.
     `),
   }),
 
-  // @TODO solves -> addresses
+  // @TODO fragments?
   el(Slide, {
     children: md(`
-      ## Why?
+      # Yes!
 
-      We *can* write CSS in JavaScript. But why?
+      We can *express* CSS using JS.
 
-      * Variables & functions
-      * Dependency management
-      * Code sharing / reuse
-      * Interoperability
-      * The reasons we've invented new languages
+      We can *use* CSS using JS.
 
-      ... JavaScript addresses these for us.
+      But *why*?
     `),
     script: md(`
-      Ok. So we *can* write CSS in JavaScript. But why would we do this?
+      So yes! We can *express* CSS using JavaScript.
 
-      Well the limitations of CSS I talked about earlier, the reasons
-      we've had to invent new languages, JavaScript already solves for us.
+      And we can *use* it to actually style elements in the browser.
+
+      But would we actually want to do this? Are there advantages?
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## *Why* JS CSS?
+
+      * Constants and variables
+      * Extend the language (functions)
+      * Module and dependency management
+      * Code sharing / reuse
+      * Interoperability
+    `),
+    script: md(`
+      To start with, remember the issues and limitations of CSS that I talked about earlier? The reasons in which we've invented new languages?
+
+      Well JavaScript addresses these issues for us automatically.
+
+      Let me show you what I mean.
     `),
   }),
 
@@ -879,7 +1098,7 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
-      For example, let's look at arithmetic in JavaScript.
+      Let's look at arithmetic in JavaScript.
 
       And it doesn't matter how many spaces *or* parenthesis you use.
 
