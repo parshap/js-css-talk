@@ -683,6 +683,123 @@ module.exports = [
   }),
 
   el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      Alright. Let's look at variables.
+    `),
+  }),
+
+  el(Slide, {
+    children: [
+      el("h2", {
+        children: "Variable Values",
+      }),
+      el(TwoColumns, {
+        left: [
+          md(`
+            ### SCSS
+
+            \`\`\`css
+            $headingColor: red;
+            h2 {
+              color: $headingColor;
+            }
+            $headingColor: white;
+            \`\`\`
+
+            ---
+
+            #### Compiled
+
+            \`\`\`css
+            h2 {
+              color: red;
+            }
+            \`\`\`
+          `),
+        ],
+        right: null,
+      }),
+    ],
+    script: md(`
+      First let's look at how Sass handles variables.
+
+      We have a variable, \`headingColor\` that's used to declare the color in
+      h2 elements. But the variable is assigned a value twice. Once before we
+      use it, and once after we use it.
+
+      With Sass, we get the value from the first asignment.
+    `),
+  }),
+
+  el(Slide, {
+    children: [
+      el("h2", {
+        children: "Variable Values",
+      }),
+      el(TwoColumns, {
+        left: [
+          md(`
+            ### SCSS
+
+            \`\`\`css
+            $headingColor: red;
+            h2 {
+              color: $headingColor;
+            }
+            $headingColor: white;
+            \`\`\`
+
+            ---
+
+            #### Compiled
+
+            \`\`\`css
+            h2 {
+              color: red;
+            }
+            \`\`\`
+          `),
+        ],
+        right: [
+          md(`
+            ### LESS
+
+            \`\`\`css
+            @headingColor: red;
+            h2 {
+              color: @headingColor;
+            }
+            @headingColor: white;
+            \`\`\`
+
+            ---
+
+            #### Compiled
+
+            \`\`\`css
+            h2 {
+              color: white;
+            }
+            \`\`\`
+          `),
+        ],
+      }),
+    ],
+    script: md(`
+      Now let's look at LESS. We have the same thing, a variable that gets
+      assigned a value twice, and we're using it once in between the two
+      assignments.
+
+      Well, it's the opposite as Sass. LESS uses the last value assigned to a
+      variable, regardless of where you're using it.
+    `),
+  }),
+
+
+  el(Slide, {
     children: md(`
       ## LESS: Arithmetic
 
@@ -806,126 +923,6 @@ module.exports = [
 
       When we do \`10cm / 10mm\`, LESS ignores the unit on the second number and
       gives us the unexpected result: 10cm.
-    `),
-  }),
-
-  el(Slide, {
-    children: null,
-    script: md(`
-      ~ * TRANSITION * ~
-
-      Alright. Let's look at variables.
-    `),
-  }),
-
-  el(Slide, {
-    children: [
-      el("h2", {
-        children: "Variable Values",
-      }),
-      el(TwoColumns, {
-        left: [
-          md(`
-            ### SCSS
-
-            \`\`\`css
-            $headingColor: red;
-            h2 {
-              color: $headingColor;
-            }
-            $headingColor: white;
-            \`\`\`
-
-            ---
-
-            #### Compiled
-
-            \`\`\`css
-            h2 {
-              color: red;
-            }
-            \`\`\`
-          `),
-        ],
-        right: null,
-      }),
-    ],
-    script: md(`
-      First let's look at how Sass handles variables.
-
-      We have a variable, \`headingColor\` that's used to declare the color in
-      h2 elements. But the variable is assigned a value twice. Once before we
-      use it, and once after we use it.
-
-      Is it clear what the compiled result is going to be?
-
-      With Sass, we get the value from the first asignment.
-    `),
-  }),
-
-  el(Slide, {
-    children: [
-      el("h2", {
-        children: "Variable Values",
-      }),
-      el(TwoColumns, {
-        left: [
-          md(`
-            ### SCSS
-
-            \`\`\`css
-            $headingColor: red;
-            h2 {
-              color: $headingColor;
-            }
-            $headingColor: white;
-            \`\`\`
-
-            ---
-
-            #### Compiled
-
-            \`\`\`css
-            h2 {
-              color: red;
-            }
-            \`\`\`
-          `),
-        ],
-        right: [
-          md(`
-            ### LESS
-
-            \`\`\`css
-            @headingColor: red;
-            h2 {
-              color: @headingColor;
-            }
-            @headingColor: white;
-            \`\`\`
-
-            ---
-
-            #### Compiled
-
-            \`\`\`css
-            h2 {
-              color: white;
-            }
-            \`\`\`
-          `),
-        ],
-      }),
-    ],
-    script: md(`
-      Now let's look at LESS. We have the same thing, a variable that gets
-      assigned a value twice, and we're using it once in between the two
-      assignments.
-
-      What do you think the result is going to be?
-
-      Well, it's the opposite as Sass. LESS uses the last value assigned to a
-      variable, regardless of where you're using it.
     `),
   }),
 
@@ -1311,7 +1308,7 @@ module.exports = [
     `),
     script: md(`
       LESS and Sass both give us this ability, but they have their own unique
-      semantics.
+      semantics and scoping rules.
     `),
   }),
 
@@ -1420,7 +1417,7 @@ module.exports = [
       \`\`\`
     `),
     script: md(`
-      It's all the same… just as God intended math to be.
+      It all comes out to 8px.
     `),
   }),
 
@@ -1516,6 +1513,11 @@ module.exports = [
       ## Code Reuse
 
       \`\`\`js
+      var style = {
+        ".button": createButtonStyles("red"),
+        ".secondary-button": createButtonStyles("#12c012"),
+      }
+
       function createButtonStyles(baseColor) {
         return {
           color: baseColor,
@@ -1523,11 +1525,6 @@ module.exports = [
             color: mix(baseColor, "#000"),
           },
         };
-      }
-
-      var style = {
-        ".button": createButtonStyles("red"),
-        ".secondary-button": createButtonStyles("#12c012"),
       }
       \`\`\`
     `),
@@ -1543,7 +1540,7 @@ module.exports = [
       styles for a button based on that color.
 
       We get the same sort of code reuse as what some preprocessors call
-      "mixins", except with sane scoping semantics.
+      "mixins", except with sane semantics.
     `),
   }),
 
@@ -1645,7 +1642,7 @@ module.exports = [
     `),
     script: md(`
       But if our styles are in JavaScript, and our canvas code is also in
-      JavaScript, it's trivial to share variables between the two.
+      JavaScript, it's trivial to share values between the two.
     `),
   }),
 
@@ -1926,7 +1923,7 @@ module.exports = [
       CSS has a new feature called css feature queries.
 
       It's kind of like media queries, but instead of testing things like the
-      device width, it lets us test if the browser supports a certain css
+      device width, it lets us test if the device supports a certain css
       feature.
     `),
   }),
@@ -1962,11 +1959,11 @@ module.exports = [
       3. Feed new CSS back into browser
     `),
     script: md(`
-      But, if we're in the browser runtime then we have access to
-      information about the browser environment, like whether or not it
-      supports a certain CSS feature.
+      * If executing JS in browser
+      * Have access to information about browser environment
+      * Like whether or not it supports a certain CSS feature
 
-      And we have access to our CSS AST.
+      And we can access to our CSS AST like I showed.
 
       We can use that information about the browser and transform our CSS AST to a new one.
 
@@ -2038,13 +2035,13 @@ module.exports = [
       }),
     ],
     script: md(`
-      One of the browser's jobs with CSS is to take selectors and figure out which elements match. Then styles are applied to those elements.
+      One of the browser's jobs with CSS is to take selectors and figure out which elements match. Then styles are applied to matched elements.
 
       In this example, when the browser comes across our css rule, it knows to
       match it to the span that is a descendent of a div, and apply the
       color red to it.
 
-      Another way we can take over the browser is doing this ourselves.
+      Another way we can take over the browser is doing matching and applying of styles ourselves.
     `),
   }),
 
@@ -2104,7 +2101,9 @@ module.exports = [
     script: md(`
       Take \`:first-child\` and \`:last-child\` for example.
 
-      If we know the number of siblings an element has, we can determine if it's the first child or not, and if it's the last child or not.
+      If we know about the siblings of an element, we can determine if it's the first child or not, and if it's the last child or not.
+
+      This means would able to implement \`:first-child\` and \`:last-child\` ourselves.
     `),
   }),
 
@@ -2122,21 +2121,33 @@ module.exports = [
       \`\`\`
 
       \`\`\`js
-      o
+
       elements.forEach(function(element) {
-        element.style = rule.style;
+        if (isFirstChild(element.parentNode, element)) {
+          element.style = rule.style;
+        }
       });
       \`\`\`
     `),
     script: md(`
+      When we're iterating through elements, we can use information about the element's position in the document to determine if it should get our first-child or last-child styles.
 
-      That means, in this step, when we're iterating through elements, we can use information about the element's position to determine if it should get the styles or not.
+      That's not too useful though since most browsers support \`:first-child\` and \`:last-child\` natively.
 
-      This means we're able to polyfill \`:first-child\` and \`:last-child\`.
+      But, with the same kind of information about the document's hierarchy, maybe we can polyfill something more useful.
+    `),
+  }),
 
-      That's not too useful though since most browsers support \`:first-child\` and \`:last-child\`.
+  el(Slide, {
+    children: [
+      md(`
+        ## Flexbox Polyfill
+      `),
+    ],
+    script: md(`
+      Flexbox is a css layout feature that makes it easy to express all the crazy things we do with floats and tables and various other layout hacks.
 
-      But, with the same kind of information about the document's hierarchy, maybe we can polyfill something infinitely more useful.
+      If we know the flexbox styles we want to apply to an element, and we know its parents and its children and all of their styles, we are able to calculate the dimensions and position of the element.
     `),
   }),
 
@@ -2172,15 +2183,82 @@ module.exports = [
       }),
     ],
     script: md(`
-      Flexbox is a css layout module that makes it easy to express all the crazy things we do with floats and tables and various other layout hacks.
-
-      If we know the flexbox styles we want to apply to an element, and we know its parents and its children and all of their styles, we are able to calculate the dimensions and position of the element.
-
       This example has a flex container with two children, each with an equal grow factor of \`1\`.
 
       This means that we'll have a container with two side-by-side columns inside of it, each with equal width.
 
-      There's already a module on npm that performs this kind of flexbox calculations and we could use it to implement a runtime flexbox polyfill.
+      I was able to determine that by just looking at our CSS rules and the structure of our document.
+
+      There's already a module on npm that performs this kind of flexbox calculations for us.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## css-layout
+
+      \`\`\`js
+      var doc = {
+        style: { display: "flex", width: 1000, height: 1000 },
+        children: [
+          { style: { flex: 1 } },
+          { style: { flex: 1 } },
+        ],
+      };
+      \`\`\`
+    `),
+    script: md(`
+      If we can describe our document, creating a representation of our
+      document hierarchy and the style we want each element to have.
+
+      Then we could use the css-layout module to calculate the layout of our
+      modules.
+    `),
+  }),
+
+  el(Slide, {
+    children: md(`
+      ## css-layout
+
+      \`\`\`js
+      > var layout = require("css-layout");
+      > layout(doc)
+      { width: 1000,
+        height: 1000,
+        top: 0,
+        left: 0,
+        children: 
+         [ { width: 500,
+             height: 1000,
+             top: 0,
+             left: 0 },
+           { width: 500,
+             height: 1000,
+             top: 0,
+             left: 500 } ] }
+      \`\`\`
+    `),
+    script: md(`
+      So if we pass the right information to css-layout, it can calculate the
+      exact dimensions and positions of each element for us.
+
+      We could use this to implement a runtime flexbox polyfill.
+    `),
+  }),
+
+  el(Slide, {
+    children: null,
+    script: md(`
+      ~ * TRANSITION * ~
+
+      That's awesome.
+
+      I think we're in a really exciting place right now.
+
+      The JS module ecosystem is implemeneting some great things right now.
+
+      And I think it's going to be really interesting to see what we can do
+      with them.
     `),
   }),
 
@@ -2211,6 +2289,8 @@ module.exports = [
       Come find me to talk about any of this.
 
       Or you can tweet me @parshap.
+
+      Thanks for your time!
     `),
   }),
 ];
