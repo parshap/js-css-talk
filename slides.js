@@ -302,22 +302,6 @@ module.exports = [
     `),
   }),
 
-  /*
-  el(Slide, {
-    children: el("div", {
-      dangerouslySetInnerHTML: {
-        __html: fs.readFileSync(__dirname + "/twitter-failwhale.html"),
-      },
-    }),
-    script: md(`
-      Like this Twitter Fail Whale.
-
-      Which uses clever combinations of CSS properties to create various shapes
-      and keyframe animations to animate them.
-    `),
-  }),
- */
-
   el(Slide, {
     children: el("div", {
       dangerouslySetInnerHTML: {
