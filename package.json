@@ -16,8 +16,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate": "babel-node generate.js",
-    "watch": "./watch",
-    "postinstall": "cd reveal.js && npm install && npm install grunt-cli"
+    "watch": "script/watch",
+    "postinstall": "script/build"
   },
   "author": "Parsha Pourkhomami <parshap+npm@gmail.com>",
   "license": "Public Domain"

@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+FILES="slides.js generate.js template.html"
+GENERATE="npm run-script -s generate"
+TARGET=build/index.html
+BUILD_HTML="$GENERATE | sponge $TARGET"
+ON_WATCH_=('echo "Reload $(date)" && ' "$BUILD_HTML")
+ON_WATCH="${ON_WATCH_[@]}"
+
+(cd build && node_modules/.bin/grunt serve) &
+
+node_modules/.bin/onchange $FILES -- bash -c "$ON_WATCH"

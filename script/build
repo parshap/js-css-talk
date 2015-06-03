@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+export GIT_WORK_TREE=build
+export GIT_DIR=reveal.js/.git
+git checkout master .
+git clean -xdf
+
+(cd build && npm install && npm install grunt-cli)
+
+ln -s ../images build/images
+ln -s ../space-img build/space-img
+
+npm run-script -s generate > build/index.html
