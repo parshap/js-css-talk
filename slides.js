@@ -6,7 +6,6 @@ var marked = require("marked");
 var stripIndent = require("strip-indent");
 var xtend = require("xtend");
 var fs = require("fs");
-var xtend = require("xtend");
 
 var imgStyle = {
   display: "block",
@@ -37,6 +36,13 @@ var solarized = {
 };
 
 var Slide = React.createClass({
+  propTypes: {
+    title: React.PropTypes.node,
+    children: React.PropTypes.node,
+    notes: React.PropTypes.node,
+    style: React.PropTypes.object,
+  },
+
   render: function() {
     return el("section", {
       style: xtend({
@@ -50,16 +56,50 @@ var Slide = React.createClass({
           children: this.props.title,
         }),
         this.props.children,
-        this.props.script && el("aside", {
+        this.props.notes && el("aside", {
           className: "notes",
           children: el("div", {
             style: {
               "font-size": "85%",
             },
-            children: this.props.script,
+            children: this.props.notes,
           }),
         }),
       ],
+    });
+  },
+});
+
+var ScreenSlide = React.createClass({
+  statics: {
+    hideInPrint: true,
+  },
+
+  render: function() {
+    return el(Slide, this.props);
+  },
+});
+
+// An empty slide used to pause for transition purposes
+var TransitionSlide = React.createClass({
+  propTypes: {
+    title: React.PropTypes.node,
+    children: React.PropTypes.node,
+    notes: React.PropTypes.node,
+    script: React.PropTypes.node,
+    style: React.PropTypes.object,
+  },
+
+  statics: {
+    hideInPrint: true,
+  },
+
+  render: function() {
+    return el(ScreenSlide, {
+      title: null,
+      children: null,
+      style: null,
+      script: this.props.script,
     });
   },
 });
@@ -88,18 +128,38 @@ var TwoColumns = React.createClass({
   },
 });
 
-var BigHeading = React.createClass({
+var VerticalCenter = React.createClass({
   render: function() {
     return el("div", {
       style: {
-        "margin-top": "100px",
-        "text-align": "center",
+        "display": "flex",
+        "height": "100%",
+        "align-items": "center",
       },
+      children: el("div", {
+        style: {
+          width: "100%",
+        },
+        children: this.props.children,
+      }),
+    });
+  },
+});
+
+var BigHeading = React.createClass({
+  render: function() {
+    return el(VerticalCenter, {
       children: [
         el("h1", {
+          style: {
+            "text-align": "center",
+          },
           children: this.props.heading
         }),
         this.props.subHeading && el("h2", {
+          style: {
+            "text-align": "center",
+          },
           children: this.props.subHeading
         }),
       ],
@@ -154,19 +214,6 @@ module.exports = [
             }),
           ],
         }),
-        el("h6", {
-          style: {
-            color: solarized.base00,
-            "lineHeight": "1",
-          },
-          children: [
-            "May 27",
-            el("sup", {
-              children: "th",
-            }),
-            ", JS Conf US 2015",
-          ],
-        }),
         el("p", {
           style: {
             "lineHeight": "1",
@@ -187,6 +234,11 @@ module.exports = [
         }),
       ],
     }),
+    notes: md(`
+      * https://twitter.com/parshap
+      * https://github.com/parshap
+      * parshap@gmail.com
+    `),
     script: md(`
       Hi everyone!
 
@@ -196,39 +248,15 @@ module.exports = [
     `),
   }),
 
-  /*
-  el(Slide, {
-    children: md(`
-      ## Parsha Pourkhomami
-
-      @parshap
-      https://github.com/parshap
-      https://twitter.com/parshap
-    `),
-    script: md(`
-      First let me tell you a tiny bit about myself.
-
-      I'm a computer scientist and software engineer.
-
-      I work at a tiny company called *aboutLife*, where we're trying to make
-      it easier to get long-term financial advice.
-
-      I've been hacking on websites and writing JavaScript and CSS since the
-      mid '90s.
-
-      And I'm passionate about enabling other developers and making their lives easier.
-
-      So I like working on tooling, libraries, and general patterns.
-
-      You can find me on GitHub and Twitter and various other places under the handle *parshap*.
-    `),
-  }),
- */
-
   el(Slide, {
     children: el(BigHeading, {
       heading: "Ideas, Not Code",
     }),
+    notes: md(`
+      Not proposing any production-ready code, just ideas to think about.
+
+      Give me your feedback.
+    `),
     script: md(`
       Before I start, I want to warn you. This talk is about ideas, not code.
 
@@ -253,6 +281,11 @@ module.exports = [
       style: imgStyle,
       src: "/images/virginamerica-nocss.png",
     }),
+    notes: md(`
+      CSS enables rich interfaces for websites.
+
+      This is virginamerica.com *without* css.
+    `),
     script: md(`
       This is Virgin America's website without any CSS.
 
@@ -265,6 +298,9 @@ module.exports = [
       style: imgStyle,
       src: "/images/virginamerica-css.png",
     }),
+    notes: md(`
+      virginamerica.com *with* css
+    `),
     script: md(`
       And turn it into this!
 
@@ -277,6 +313,9 @@ module.exports = [
       style: imgStyle,
       src: "/images/craigslist-nocss.png",
     }),
+    notes: md(`
+      craigslist.com *without* css
+    `),
     script: md(`
       To this.
     `),
@@ -287,13 +326,17 @@ module.exports = [
       style: imgStyle,
       src: "/images/craigslist-css.png",
     }),
+    notes: md(`
+      craigslist.com *with* css
+
+      *(craigslist uses css?)*
+    `),
     script: md(`
       And I thought Craigslist didn't even use css!
     `),
   }),
 
-  el(Slide, {
-    children: null,
+  el(TransitionSlide, {
     script: md(`
       ~ *BLANK* ~
 
@@ -304,43 +347,34 @@ module.exports = [
 
   el(Slide, {
     children: el("div", {
+      className: "dn--print",
       dangerouslySetInnerHTML: {
         __html: fs.readFileSync(__dirname + "/space-animation.html"),
       },
     }),
+    notes: md(`
+      CSS also enables animations and other visual effects.
+    `),
     script: md(`
       Like whatever this thing is.
 
       This animation utilizes the GPU to composite several layers together and
       rotate them on top of eachother.
+
+      We're able to take advantage of advanced graphics rendering techniques
+      by writing just a few lines of high-level declarattive code.
     `),
   }),
 
-  /*
-  // @TODO
   el(Slide, {
-    children: md(`
-      ## CSS vs OpenGL
-    `),
-    script: md(`
-      It's great because, as developers, we're able to take advantage of
-      advanced graphics rendering techniques by writing just a few lines of
-      high-level declarattive code.
-
-      Instead of low-level procedural code like this.
-    `),
-  }),
- */
-
-  el(Slide, {
-    children: el("img", {
-      style: xtend(imgStyle, {
-        "margin-top": "100px",
+    children: el(VerticalCenter, {
+      children: el("img", {
+        style: imgStyle,
+        src: "/images/css-is-awesome.jpg",
       }),
-      src: "/images/css-is-awesome.jpg",
     }),
     script: md(`
-      So yeah, CSS is preetty awesome.
+      So yeah, CSS is pretty awesome.
     `),
   }),
 
@@ -352,9 +386,16 @@ module.exports = [
       * No way to extend the language
       * Bad dependency management
       * No code sharing or reuse
-      * No interopability with JS
+      * No interoperability with JS
 
       Sometimes limitations are good. Sometimes not.
+    `),
+    notes: md(`
+      Limitations can be good and force us to write easy to understand code.
+
+      Limitations can also encourage copy-and-pasted and hard-to-maintain code.
+
+      Depends on the app.
     `),
     script: md(`
       But CSS does have its fair share of issues and limitations.
@@ -363,7 +404,7 @@ module.exports = [
       * There's no way to extend the language with our own logic and functions
       * There's basically no module system or dependency management — all we have is the \`@import\` statement which has restricting performance characteristics
       * There's no unit of code reuse or meta programming
-      * And there's no interopability between CSS and the rest of our front-end code
+      * And there's no interoperability between CSS and the rest of our front-end code
 
       Sure, sometimes these limitations are okay and they can even force us to
       write straight-forward easy to understand code.
@@ -402,6 +443,9 @@ module.exports = [
         ],
       }),
     ],
+    notes: md(`
+      Work around CSS limitations with preprocessors.
+    `),
     script: md(`
       We've been able to work around a lot of these issues by creating new
       languages we call CSS preprocessors.
@@ -428,7 +472,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: [
       md(`
         ## Stylus: Ambiguous Syntax
@@ -497,6 +541,9 @@ module.exports = [
         ],
       }),
     ],
+    notes: md(`
+      Stylus syntax is terse, but ambiguous
+    `),
     script: md(`
       We get pretty much what we expected - a form selector with color, and
       font on inputs and textareas.
@@ -506,7 +553,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: [
       md(`
         ## Stylus: Ambiguous Syntax
@@ -530,7 +577,7 @@ module.exports = [
     ],
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: [
       md(`
         ## Stylus: Ambiguous Syntax
@@ -597,6 +644,12 @@ module.exports = [
         ],
       }),
     ],
+    notes: md(`
+      Two lines are accidentally swapped.
+
+      Stylus thinks color declaration is a selector. Output is valid CSS, there
+      is no error.
+    `),
     script: md(`
       Nope. Stylus gets a bit confused and instead thinks the color declaration
       is a selector. The output is still valid CSS, so there's no error.
@@ -606,7 +659,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(TransitionSlide, {
     children: null,
     script: md(`
       ~ * TRANSITION * ~
@@ -616,7 +669,7 @@ module.exports = [
   }),
 
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## LESS: Dependencies
 
@@ -644,6 +697,9 @@ module.exports = [
       @import (optional) "foo.less";
       \`\`\`
     `),
+    notes: md(`
+      LESS has 8 ways to import dependencies.
+    `),
     script: md(`
       Actually, less gives us 8 ways to import dependencies.
 
@@ -657,16 +713,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
-    children: null,
-    script: md(`
-      ~ * TRANSITION * ~
-
-      Alright… let's move on.
-    `),
-  }),
-
-  el(Slide, {
+  el(TransitionSlide, {
     children: null,
     script: md(`
       ~ * TRANSITION * ~
@@ -675,7 +722,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: [
       el("h2", {
         children: "Variable Values",
@@ -772,6 +819,9 @@ module.exports = [
         ],
       }),
     ],
+    notes: md(`
+      Nuanced preprocessor language semantics.
+    `),
     script: md(`
       Now let's look at LESS. We have the same thing, a variable that gets
       assigned a value twice, and we're using it once in between the two
@@ -783,7 +833,7 @@ module.exports = [
   }),
 
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## LESS: Arithmetic
 
@@ -800,7 +850,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## LESS: Arithmetic
 
@@ -817,7 +867,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## LESS: Arithmetic
 
@@ -829,13 +879,16 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      Whitespace and parenthesis can change meaning of expression
+    `),
     script: md(`
       And be careful with adding parenthesis too, because that will change the
       behavior too.
     `),
   }),
 
-  el(Slide, {
+  el(TransitionSlide, {
     children: null,
     script: md(`
       ~ * TRANSITION * ~
@@ -846,7 +899,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## LESS: Unit Conversion
 
@@ -870,7 +923,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## LESS: Unit Conversion
 
@@ -900,6 +953,9 @@ module.exports = [
         font-size: 10cm / 10mm; /* 1cm */
       }
       \`\`\`
+    `),
+    notes: md(`
+      Unit conversion works for *some* operators, not \`/\`.
     `),
     script: md(`
       But be careful, because if you mix units when you're doing division, you're gonna have a bad
@@ -936,6 +992,9 @@ module.exports = [
     children: el(BigHeading, {
       heading: "Language Design is Hard",
     }),
+    notes: md(`
+      Getting programming languages right is hard.
+    `),
     script: md(`
       Getting programming languages right is hard.
 
@@ -947,7 +1006,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(TransitionSlide, {
     children: null,
     script: md(`
       ~ * TRANSITION * ~
@@ -973,7 +1032,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: [
       el(TwoColumns, {
         left: md(`
@@ -1022,6 +1081,9 @@ module.exports = [
         `),
       }),
     ],
+    notes: md(`
+      Simple CSS rule expressed in JavaScript.
+    `),
     script: md(`
       There. It's actually not too different. We basically add some quotes,
       swap the semicolon for a comma, and we've got valid JavaScript!
@@ -1117,6 +1179,10 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      Sometimes you need multiple declarations of the same property for e.g.,
+      fallback values for unsupported features.
+    `),
     script: md(`
       Sometimes in CSS we want to define a property more than once. We do this
       to provide fallbacks for browsers that don't support something.
@@ -1160,6 +1226,9 @@ module.exports = [
        * Media queries
        * Other \`@\` rules
     `),
+    notes: md(`
+      *Expressing* CSS in JavaScript is possible.
+    `),
     script: md(`
       So we've got rules with selectors, pseudo selectors, child selectors, any kind of selector really.
       And we've got property fallbacks, media queries, and all kinds of at-rules.
@@ -1187,6 +1256,10 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      But how do we *use* styles expressed as JavaScript objects to style
+      elements in a browser?
+    `),
     script: md(`
       But, so far, we've only seen how to *express* CSS using JavaScript.
 
@@ -1207,6 +1280,12 @@ module.exports = [
       }"
       \`\`\`
     `),
+    notes: md(`
+      A \`toCSS()\` function that "compiles" the JavaScript objects to a CSS
+      source string.
+
+      Then this CSS source can be given to the browser.
+    `),
     script: md(`
       All we really need is a function that takes one of these style objects
       and returns a CSS source string.
@@ -1215,7 +1294,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       # Yes!
 
@@ -1253,7 +1332,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Variables
 
@@ -1268,7 +1347,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Variables
 
@@ -1290,6 +1369,11 @@ module.exports = [
       $buttonColor: red;
       \`\`\`
     `),
+    notes: md(`
+      CSS has no variables.
+
+      LESS and Sass give us variables in own unique ways.
+    `),
     script: md(`
       LESS and Sass both give us this ability, but they have their own unique
       semantics and scoping rules.
@@ -1310,14 +1394,18 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      JavaScript has variables built-in! And with semantics we know and
+      understand.
+    `),
     script: md(`
-      JavaScript has variables builtin! And with semantics we know.
+      JavaScript has variables built-in! And with semantics we know.
 
       We can use them to define our constants in one place.
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Arithmetic
 
@@ -1336,7 +1424,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Arithmetic
 
@@ -1351,7 +1439,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Arithmetic
 
@@ -1367,7 +1455,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Arithmetic
 
@@ -1400,6 +1488,10 @@ module.exports = [
       };
       \`\`\`
     `),
+    notes: md(`
+      JavaScript syntax is not comma-sensitive or parenthesis-sensitive, unlike
+      some preprocessors.
+    `),
     script: md(`
       It all comes out to 8px.
     `),
@@ -1426,6 +1518,13 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      CSS has no ways to extend language with our own logic.
+
+      Preprocessors provide built-in functions.
+
+      Don't allow to define own logic.
+    `),
     script: md(`
       In CSS, we have no way to extend the language with our own logic.
 
@@ -1434,7 +1533,7 @@ module.exports = [
       In CSS, we have to manually precompute the result and hard code it into
       our source.
 
-      Preprocessors like LESS improve the situation by giving a set of builtin
+      Preprocessors like LESS improve the situation by giving a set of built-in
       functions to do some basic things.
 
       But still don't allow us to define our own logic.
@@ -1459,6 +1558,9 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      CSS in JavaScript enables use of arbitrary functions
+    `),
     script: md(`
       With JavaScript, we can define arbitrary functions and use them in our
       styles.
@@ -1482,6 +1584,9 @@ module.exports = [
         }
       };
       \`\`\`
+    `),
+    notes: md(`
+      Don't have to write own functions, can use modules.
     `),
     script: md(`
       Of course, we
@@ -1512,6 +1617,12 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      Not limited to just functions that manipulate colors or operate
+      on single values.
+
+      Can use functions to generate style declarations.
+    `),
     script: md(`
       And we're not limited to just functions that manipulate colors or operate
       on single values.
@@ -1528,7 +1639,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Share Constants
 
@@ -1546,7 +1657,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Share Constants
 
@@ -1598,6 +1709,9 @@ module.exports = [
       ctx.fillText("Hello!", 0, 0);
       \`\`\`
     `),
+    notes: md(`
+      Manually keep values in sync between CSS and JS.
+    `),
     script: md(`
       * You guys have probably run into something like this before. You end up having to leave these comments letting other developers know they need to update both places when one changes.
     `),
@@ -1623,6 +1737,9 @@ module.exports = [
       ctx.fillStyle = buttonColor;
       ctx.fillText("Hello!", 0, 0);
       \`\`\`
+    `),
+    notes: md(`
+      JavaScript variables can be defined once and shared.
     `),
     script: md(`
       But if our styles are in JavaScript, and our canvas code is also in
@@ -1654,6 +1771,9 @@ module.exports = [
       };
       \`\`\`
     `),
+    notes: md(`
+      Use JS module system to organize styles and dependencies.
+    `),
     script: md(`
       Of course we don't need everything to be in a single file.
 
@@ -1672,6 +1792,14 @@ module.exports = [
       * 150,000+ modules
       * Reusable style modules
       * Utility modules
+    `),
+    notes: md(`
+      Can use modules from npm.
+
+      Reusable styles as modules.
+
+      Utility modules: e.g., given a background color, generate foreground
+      color with good contrast.
     `),
     script: md(`
       * And speaking of modules, we can take advantage of npm!
@@ -1701,6 +1829,11 @@ module.exports = [
 
       *With great power comes great responsibility.*
     `),
+    notes: md(`
+      Use the power of a turing-complete language.
+
+      Requires caution.
+    `),
     script: md(`
       I've shown that there *are* advantages of using JavaScript to write CSS.
 
@@ -1720,7 +1853,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(TransitionSlide, {
     children: null,
     script: md(`
       ~ * TRANSITION * ~
@@ -1736,6 +1869,11 @@ module.exports = [
       heading: "Warning",
       subHeading: "Mad Science",
     }),
+    notes: md(`
+      *Warning: Experimental thinking.*
+
+      How else can we mix JavaScript and CSS?
+    `),
     script: md(`
       Let me pause to say, you should consider the following experimental thinking.
 
@@ -1752,6 +1890,11 @@ module.exports = [
       heading: "Take Over the Browser",
       subHeading: "Use JavaScript to Apply Styles",
     }),
+    notes: md(`
+      Use JavaScript to *implement* CSS.
+
+      Take over browser's role of parsing css and applying styles to elements.
+    `),
     script: md(`
       We can use JavaScript to apply styles in the browser.
 
@@ -1763,7 +1906,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## Prerequisite: CSS AST
     `),
@@ -1795,6 +1938,9 @@ module.exports = [
                   value: 'red' } ] } ] }
       \`\`\`
     `),
+    notes: md(`
+      CSS in JavaScript is not a prerequisite. Just need a way to parse css.
+    `),
     script: md(`
       Of course, there's an npm module for that.
 
@@ -1824,6 +1970,10 @@ module.exports = [
 
       ".button { color: red }"
       \`\`\`
+    `),
+    notes: md(`
+      Of course, if we can parse css source code we can also turn it back into
+      css source code.
     `),
     script: md(`
       And of course, we can do the inverse and take an AST to generate a CSS
@@ -1899,7 +2049,7 @@ module.exports = [
   }),
  */
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## @supports
     `),
@@ -1926,6 +2076,11 @@ module.exports = [
       }
       \`\`\`
     `),
+    notes: md(`
+      CSS feature detection.
+
+      Many browsers have not implement \`@supports\`.
+    `),
     script: md(`
       This example lets us use flexbox if the browser supports it, otherwise we
       use float.
@@ -1941,6 +2096,9 @@ module.exports = [
       1. Get information about browser environment
       2. Use information to transform CSS AST
       3. Feed new CSS back into browser
+    `),
+    notes: md(`
+      Implement \'@supports\' at runtime in the browser.
     `),
     script: md(`
       * If executing JS in browser
@@ -1958,7 +2116,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## @supports
 
@@ -1985,7 +2143,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(TransitionSlide, {
     children: null,
     script: md(`
       What else can we do?
@@ -2018,6 +2176,11 @@ module.exports = [
         `),
       }),
     ],
+    notes: md(`
+      Browser matches selectors to elements and applies styles.
+
+      Can sidestep the browser and implement this too.
+    `),
     script: md(`
       One of the browser's jobs with CSS is to take selectors and figure out which elements match. Then styles are applied to matched elements.
 
@@ -2029,7 +2192,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
         ## Take Over the Browser
 
@@ -2044,7 +2207,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
         ## Take Over the Browser
 
@@ -2058,6 +2221,13 @@ module.exports = [
         });
         \`\`\`
     `),
+    notes: md(`
+      Have context of element's position in document when applying styles.
+
+      Can check parent, children, etc.
+
+      This information enables implementing more CSS features.
+    `),
     script: md(`
       Then for each matched element, we would apply the rule's styles to the element.
 
@@ -2069,7 +2239,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: md(`
       ## :first-child :last-child
 
@@ -2113,6 +2283,9 @@ module.exports = [
       });
       \`\`\`
     `),
+    notes: md(`
+      Implement \`:last-child\` selector for IE8.
+    `),
     script: md(`
       When we're iterating through elements, we can use information about the element's position in the document to determine if it should get our first-child or last-child styles.
 
@@ -2122,7 +2295,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: [
       md(`
         ## Flexbox Polyfill
@@ -2166,6 +2339,14 @@ module.exports = [
         `),
       }),
     ],
+    notes: md(`
+      Flexbox enables simple layouts.
+
+      This example will have a container with two side-by-side columns inside
+      of it, each with equal with.
+
+      Algorithms can calculate this layout.
+    `),
     script: md(`
       This example has a flex container with two children, each with an equal grow factor of \`1\`.
 
@@ -2190,6 +2371,9 @@ module.exports = [
         ],
       };
       \`\`\`
+    `),
+    notes: md(`
+      Describe the structure of elements and their styles.
     `),
     script: md(`
       If we can describe our document, creating a representation of our
@@ -2222,6 +2406,9 @@ module.exports = [
              left: 500 } ] }
       \`\`\`
     `),
+    notes: md(`
+      Calculate the size and position of elements.
+    `),
     script: md(`
       So if we pass the right information to css-layout, it can calculate the
       exact dimensions and positions of each element for us.
@@ -2230,7 +2417,7 @@ module.exports = [
     `),
   }),
 
-  el(Slide, {
+  el(ScreenSlide, {
     children: null,
     script: md(`
       ~ * TRANSITION * ~
@@ -2239,7 +2426,7 @@ module.exports = [
 
       I think we're in a really exciting place right now.
 
-      The JS module ecosystem is implemeneting some great things right now.
+      The JS module ecosystem is implementing some great things right now.
 
       And I think it's going to be really interesting to see what we can do
       with them.
@@ -2265,6 +2452,11 @@ module.exports = [
         children: "@parshap",
       }),
     ],
+    notes: md(`
+      Thanks for reading — send feedback to [@parshap][tw]!
+
+      [tw]: https://twitter.com/parshap
+    `),
     script: md(`
       I hope I've shown you some interesting ways to mix JavaScript and CSS.
 
@@ -2277,7 +2469,26 @@ module.exports = [
       Thanks for your time!
     `),
   }),
+
+  el(Slide, {
+    children: md(`
+      ## Links
+
+      * [jss](https://github.com/jsstyles/jss)
+      * [css-layout](https://github.com/facebook/css-layout)
+      * [React: CSS in JS](http://blog.vjeux.com/2014/javascript/react-css-in-js-nationjs.html)
+      * [React: classstyle](https://github.com/syranide/react/tree/classstyle)
+      * [React: jsxstyle](https://github.com/petehunt/jsxstyle)
+      * [React: react-inline](https://github.com/martinandert/react-inline)
+      * [React: react-style](https://github.com/js-next/react-style)
+    `),
+  }),
 ];
+
+
+module.exports = module.exports.filter(function(slide) {
+  return slide.type.hideInPrint !== true;
+});
 
 [
   el(Slide, {
@@ -2425,9 +2636,9 @@ module.exports = [
   }),
 
   el(Slide, {
-    title: "Interopability",
+    title: "Interoperability",
     children: md(`
-      No interopability with JavaScript
+      No interoperability with JavaScript
 
       \`app.css\`
 
@@ -2745,7 +2956,7 @@ module.exports = [
   }),
 
   el(Slide, {
-    title: "Interopability",
+    title: "Interoperability",
     children: md(`
       No language barrier
 
