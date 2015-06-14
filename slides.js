@@ -2475,6 +2475,7 @@ module.exports = [
       ## Links
 
       * [jss](https://github.com/jsstyles/jss)
+      * [js2css](https://github.com/sjurba/js2css)
       * [css-layout](https://github.com/facebook/css-layout)
       * [React: CSS in JS](http://blog.vjeux.com/2014/javascript/react-css-in-js-nationjs.html)
       * [React: classstyle](https://github.com/syranide/react/tree/classstyle)
